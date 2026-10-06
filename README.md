@@ -25,11 +25,7 @@ Pas de chronomètre : l'animateur valide quand le groupe a fini de discuter.
 
 ## Modifier le contenu
 - Questions et manches : `js/questions.js` (pour les choix, la bonne réponse est écrite en premier ; `place` fixe sa position A/B/C).
-- **Photos (important pour la projection)** : remplacer les fichiers de `assets/photos/` en gardant les mêmes noms
-  (`montsegur`, `carcassonne`, `beziers`, `villerouge`, `paysage`, `carcassonne-hero`, en `.jpg`).
-  Les photos fournies sont des extraits agrandis de la planche d'ambiance (~750×560) : elles passent en aperçu mais sont floues en plein écran.
-  Idéal : photos réelles en 1920×1440 minimum (ex. Wikimedia Commons, licences libres — pensez à citer l'auteur).
-  Manche 2 : la photo doit bien correspondre au lieu de la question (Montségur, Carcassonne, Béziers, Villerouge-Termenès, paysage des Pyrénées).
+- **Photos** : les chemins sont déclarés dans `PHOTOS` en haut de `js/questions.js` (noms avec accents encodés, ex. `%C3%A9` = é ; l'apostrophe = `%27`). Photos HD actuelles (1920 px de large) dans `assets/photos/`. Les anciens fichiers basse résolution (`montsegur.jpg`, `carcassonne.jpg`, etc.) ne sont plus utilisés et peuvent être supprimés.
 - Logo : `assets/logo/obeo-logo.png`.
 
 ## Vérifications

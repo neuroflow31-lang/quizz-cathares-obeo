@@ -89,7 +89,7 @@ test('bonnes réponses attendues (contenu source)', () => {
 });
 test('toutes les images existent et sont de vrais JPG', () => {
   Object.entries(PHOTOS).forEach(([k, p]) => {
-    const f = path.join(root, p.src);
+    const f = path.join(root, decodeURIComponent(p.src));
     assert.ok(fs.existsSync(f), 'image manquante ' + p.src);
     const b = fs.readFileSync(f); assert.equal(b[0], 0xff); assert.equal(b[1], 0xd8);
   });

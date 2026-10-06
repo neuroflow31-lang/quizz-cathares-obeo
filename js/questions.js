@@ -5,12 +5,12 @@
    photo : clé de PHOTOS (fichiers dans assets/photos/). */
 (function (root) {
   var PHOTOS = {
-    montsegur:   { src: 'assets/photos/montsegur.jpg',        label: 'Montségur',            sub: 'Ariège' },
-    carcassonne: { src: 'assets/photos/carcassonne.jpg',      label: 'Carcassonne',          sub: 'Aude' },
-    beziers:     { src: 'assets/photos/beziers.jpg',          label: 'Béziers',              sub: 'Hérault' },
-    villerouge:  { src: 'assets/photos/villerouge.jpg',       label: 'Villerouge-Termenès',  sub: 'Aude' },
-    paysage:     { src: 'assets/photos/paysage.jpg',          label: 'Paysages d’Occitanie', sub: 'Ariège' },
-    hero:        { src: 'assets/photos/carcassonne-hero.jpg', label: 'Cité médiévale',       sub: 'Occitanie' }
+    montsegur:   { src: 'assets/photos/Ch%C3%A2teau_de_Monts%C3%A9gur_depuis_le_village.jpg',        label: 'Montségur',            sub: 'Ariège' },
+    carcassonne: { src: 'assets/photos/Carcassonne.France_Cit%C3%A9M%C3%A9di%C3%A9vale.jpg',      label: 'Carcassonne',          sub: 'Aude' },
+    beziers:     { src: 'assets/photos/River_l%27Orb,_Beziers.jpg',          label: 'Béziers',              sub: 'Hérault' },
+    villerouge:  { src: 'assets/photos/Villerouge-Termen%C3%A8s_ch%C3%A2teau.jpg',       label: 'Villerouge-Termenès',  sub: 'Aude' },
+    paysage:     { src: 'assets/photos/Ariege_-_Pyr%C3%A9n%C3%A9es_-_from_Mont_Fourcat_-_4.jpg',          label: 'Paysages d’Occitanie', sub: 'Ariège' },
+    hero:        { src: 'assets/photos/Carcassonne,_France,_view_of_the_walls_of_the_medieval_city.JPG', label: 'Cité médiévale',       sub: 'Occitanie' }
   };
 
   var ROUNDS = [

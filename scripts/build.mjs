@@ -16,7 +16,7 @@ QUESTIONS.forEach((q, i) => {
   if (!(q.correct >= 0 && q.correct < n)) fail(`Q${i + 1}: bonne réponse invalide`);
   if (!PHOTOS[q.photo]) fail(`Q${i + 1}: photo inconnue « ${q.photo} »`);
 });
-Object.entries(PHOTOS).forEach(([k, p]) => { if (!fs.existsSync(path.join(root, p.src))) fail(`Image manquante : ${p.src} (${k})`); });
+Object.entries(PHOTOS).forEach(([k, p]) => { if (!fs.existsSync(path.join(root, decodeURIComponent(p.src)))) fail(`Image manquante : ${p.src} (${k})`); });
 if (errors) process.exit(1);
 const dist = path.join(root, 'dist');
 fs.rmSync(dist, { recursive: true, force: true });
