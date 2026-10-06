@@ -1,0 +1,13 @@
+{
+  "name": "quiz-cathares-obeo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiz interactif « Les Cathares en Occitanie » — OBEO Toulouse Guillaumet",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs . 5173",
+    "test": "node --test tests/logic.test.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs dist 4173"
+  }
+}
