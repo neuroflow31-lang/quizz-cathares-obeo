@@ -1,23 +1,24 @@
 /* Quiz Les Cathares en Occitanie — OBEO Toulouse Guillaumet. Aucune dépendance, aucun serveur nécessaire. */
 (function () {
   'use strict';
-  var Q = window.QuizData.QUESTIONS, PHOTOS = window.QuizData.PHOTOS, LETTERS = window.QuizData.LETTERS;
+  var Q = window.QuizData.QUESTIONS, ROUNDS = window.QuizData.ROUNDS, PHOTOS = window.QuizData.PHOTOS, LETTERS = window.QuizData.LETTERS;
+  var N = Q.length;
   var L = window.QuizLogic;
-  var KEY = 'obeo-quiz-cathares-v1';
+  var KEY = 'obeo-quiz-cathares-v2';
   var stage = document.getElementById('stage');
 
   /* ---------- état ---------- */
   var state = fresh();
   function fresh() {
-    return { screen: 'home', mode: 'individual', players: [], nextId: 1, idx: 0, phase: 'choose', selected: null, awarded: {} };
+    return { screen: 'home', mode: 'individual', players: [], nextId: 1, idx: 0, phase: 'choose', selected: null, awarded: {}, rankMode: 'peek' };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (s && s.screen && Array.isArray(s.players) && typeof s.idx === 'number' && s.idx >= 0 && s.idx < Q.length) state = Object.assign(fresh(), s);
+      if (s && s.screen && Array.isArray(s.players) && typeof s.idx === 'number' && s.idx >= 0 && s.idx < N) state = Object.assign(fresh(), s);
     } catch (e) {}
-    if (state.screen === 'ranking' && state.mode === 'group') state.screen = 'question';
+    if (state.screen === 'ranking' && state.mode === 'group' && state.rankMode === 'peek') state.screen = 'question';
   }
   function reset() { state = fresh(); save(); }
   var selectHook = null;
@@ -94,7 +95,7 @@
   }
   function go(screen) { state.screen = screen; render(); }
   function render() {
-    var fn = { home: home, players: players, question: question, ranking: ranking, final: finalScreen }[state.screen] || home;
+    var fn = { home: home, players: players, intro: intro, question: question, ranking: ranking, final: finalScreen }[state.screen] || home;
     fn();
     if (state.screen !== 'final') stopConfetti();
   }
@@ -171,26 +172,59 @@
     setTimeout(function () { input.focus(); }, 50);
   }
 
+  /* ---------- manches ---------- */
+  function firstPhase(q) { return q.kind === 'visual' ? 'look' : 'choose'; }
+  function roundInfo(i) {
+    var r = Q[i].round, start = -1, count = 0;
+    Q.forEach(function (q, k) { if (q.round === r) { count++; if (start < 0) start = k; } });
+    return { r: r, start: start, count: count, pos: i - start, last: i === start + count - 1 };
+  }
+  var BOUNDS = (function () { var out = [], c = 0; ROUNDS.forEach(function (_, r) { c += Q.filter(function (q) { return q.round === r; }).length; out.push(c / N); }); return out.slice(0, -1); })();
+  function bonusTag(q) { return q.points > 1 ? h('div', { class: 'bonus a-zoom', text: '★ QUESTION BONUS — ' + q.points + ' POINTS' }) : null; }
+
   function beginGame(mode) {
-    state.mode = mode; state.idx = 0; state.phase = 'choose'; state.selected = null; state.awarded = {};
+    state.mode = mode; state.idx = 0; state.selected = null; state.awarded = {}; state.rankMode = 'peek';
+    state.phase = firstPhase(Q[0]);
     state.players = L.resetScores(state.players);
     lastProgress = 0;
-    go('question');
+    go('intro');
   }
+
+  /* ---------- introduction de manche ---------- */
+  function intro() {
+    var info = roundInfo(state.idx), R = ROUNDS[info.r];
+    var ptsTxt = R.points > 1 ? 'Chaque bonne réponse vaut ' + R.points + ' points' : '1 point par bonne réponse';
+    var s = h('div', { class: 'screen home intro' },
+      photoBox(R.photo, 'a-zoom'),
+      leaves('left:-30px;bottom:-20px;width:300px;height:270px;opacity:.95'),
+      h('div', { class: 'col' },
+        h('div', { class: 'a-up d1' }, logo()),
+        h('h1', { class: 'title-serif a-up d2' }, h('span', { class: 'q', text: 'MANCHE ' + (info.r + 1) }), h('span', { class: 't', text: R.name })),
+        h('div', { class: 'rule a-up d2' }),
+        h('p', { class: 'sub a-up d2', text: R.blurb }),
+        h('div', { class: 'place a-up d3', text: info.count + ' questions' + (R.bonus ? '' : ' · ' + (state.mode === 'individual' ? ptsTxt : 'jeu collectif')) }),
+        R.bonus ? h('div', { class: 'bonus a-zoom d3', style: 'margin-top:22px', text: '★ QUESTION BONUS — ' + R.points + ' POINTS' }) : null,
+        h('div', { class: 'a-up d4' }, h('button', { class: 'btn', onclick: startRound }, 'Commencer la manche', icon('arrow')))));
+    show(s);
+  }
+  function startRound() { state.phase = firstPhase(Q[state.idx]); state.selected = null; state.awarded = {}; go('question'); }
 
   /* ---------- en-tête commun ---------- */
   function header(opts) {
+    var info = roundInfo(state.idx), R = ROUNDS[info.r];
     var done = opts.progress;
-    var bar = h('div', { class: 'progress', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(Q.length), 'aria-valuenow': String(Math.round(done * Q.length)) }, h('i', { style: 'width:' + lastProgress * 100 + '%' }));
+    var bar = h('div', { class: 'progress', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(N), 'aria-valuenow': String(Math.round(done * N)) }, h('i', { style: 'width:' + lastProgress * 100 + '%' }));
+    BOUNDS.forEach(function (b) { bar.appendChild(h('b', { style: 'left:' + b * 100 + '%' })); });
     var fill = bar.firstChild;
     requestAnimationFrame(function () { requestAnimationFrame(function () { fill.style.width = done * 100 + '%'; }); });
     lastProgress = done;
     var right = [];
-    if (opts.ranking && state.mode === 'individual') right.push(h('button', { class: 'icon-btn', onclick: openRanking }, icon('list'), 'Voir le classement'));
+    if (opts.ranking && state.mode === 'individual') right.push(h('button', { class: 'icon-btn', onclick: openRanking }, icon('list'), 'Classement'));
     right.push(h('button', { class: 'icon-btn', onclick: toggleFull, 'aria-label': 'Plein écran' }, icon('full'), 'Plein écran'));
     right.push(h('button', { class: 'icon-btn', onclick: askQuit, 'aria-label': 'Quitter la partie' }, icon('x'), 'Quitter'));
-    return h('div', { class: 'head' }, logo(), bar,
-      opts.pill ? h('div', { class: 'pill', text: opts.pill }) : null, right);
+    return h('div', { class: 'head' }, logo(),
+      h('div', { class: 'progwrap' }, h('div', { class: 'ptext', text: 'Question ' + (state.idx + 1) + ' sur ' + N + '  ·  ' + R.name }), bar),
+      h('div', { class: 'pill', text: 'Manche ' + (info.r + 1) + ' · ' + (info.pos + 1) + ' / ' + info.count }), right);
   }
   function askQuit() {
     var box = h('div', { class: 'confirm' }, h('div', { class: 'box' },
@@ -201,31 +235,53 @@
         h('button', { class: 'btn small', onclick: function () { reset(); go('home'); } }, 'Oui, quitter'))));
     stage.appendChild(box);
   }
-  function openRanking() { prevScreen = state.screen === 'ranking' ? prevScreen : state.screen; go('ranking'); }
+  function openRanking() { prevScreen = state.screen === 'ranking' ? prevScreen : state.screen; state.rankMode = 'peek'; go('ranking'); }
 
   /* ---------- question ---------- */
   function question() {
-    var q = Q[state.idx];
-    var revealed = state.phase === 'revealed';
-    var mode = state.mode;
-    var s = h('div', { class: 'screen' + (revealed ? ' rev' + (mode === 'group' || !state.players.length ? ' group' : '') + (state.players.length > 10 && mode === 'individual' ? ' many' : '') : '') });
-    s.appendChild(header({ progress: (state.idx + (revealed ? 1 : 0)) / Q.length, pill: 'Question ' + (state.idx + 1) + ' / ' + Q.length, ranking: true }));
+    var q = Q[state.idx], kind = q.kind;
+    var revealed = state.phase === 'revealed', mode = state.mode;
+    var indiv = mode === 'individual' && state.players.length > 0;
+    var cls = 'screen' + (kind === 'tf' ? ' tf' : '') + (kind === 'visual' ? ' vis' : '') +
+      (revealed ? ' rev' + (indiv ? '' : ' group') + (state.players.length > 10 && indiv ? ' many' : '') : '');
+    var s = h('div', { class: cls });
+    s.appendChild(header({ progress: (state.idx + (revealed ? 1 : 0)) / N, ranking: true }));
+
+    /* visuel : d'abord la photo seule, en grand */
+    if (state.phase === 'look') {
+      var p = PHOTOS[q.photo];
+      s.appendChild(h('div', { class: 'photo lookphoto', style: 'animation:zoomIn .5s ease both' }, h('img', { src: p.src, alt: 'Photographie à reconnaître' })));
+      s.appendChild(h('div', { class: 'lookside' },
+        h('h1', { class: 'qtext a-up', style: 'font-size:68px', text: q.lookTitle }),
+        h('p', { class: 'a-up d2', style: 'font-size:34px;margin:0;color:#5F5C56;line-height:1.35', text: 'Prenez le temps d’observer et d’en discuter ensemble.' }),
+        h('div', { class: 'a-up d3' }, h('button', { class: 'btn', onclick: function () { state.phase = 'choose'; save(); question(); } }, 'Afficher les réponses', icon('arrow')))));
+      show(s); return;
+    }
 
     function answerNode(a, i) {
-      var cls = 'answer' + (a.length > 52 ? ' long' : '');
+      var tf = kind === 'tf';
+      var cls = (tf && !revealed ? 'tfbtn ' + (i === 0 ? 'v' : 'f') : 'answer' + (a.length > 52 ? ' long' : ''));
       var tag = null;
       if (revealed) {
         cls += ' locked';
         if (i === q.correct) { cls += ' good'; tag = h('span', { class: 'tag' }, icon('check'), 'Bonne réponse'); }
         else if (i === state.selected) { cls += ' bad'; tag = h('span', { class: 'tag' }, icon('cross'), 'Réponse choisie'); }
       } else if (i === state.selected) cls += ' sel';
-      var b = h('button', { class: cls, 'aria-pressed': (!revealed && i === state.selected) ? 'true' : 'false',
-        onclick: revealed ? null : function () { selectAnswer(i); } },
-        h('span', { class: 'lt', text: LETTERS[i] }), h('span', { class: 'tx', text: a }), tag, (!revealed ? h('span', { class: 'dot' }) : null));
+      var onclick = revealed ? null : function () { selectAnswer(i); };
+      var b;
+      if (tf && !revealed) {
+        b = h('button', { class: cls, 'aria-pressed': i === state.selected ? 'true' : 'false', onclick: onclick },
+          h('span', { html: i === 0 ? ICON.check : ICON.cross, class: 'ic', style: 'display:inline-flex', 'aria-hidden': 'true' }),
+          h('span', { class: 'big', text: a }), h('span', { class: 'chosen', text: '✓ Choix sélectionné' }));
+      } else {
+        var lt = tf ? (i === 0 ? '✓' : '✕') : LETTERS[i];
+        b = h('button', { class: cls, 'aria-pressed': (!revealed && i === state.selected) ? 'true' : 'false', onclick: onclick },
+          h('span', { class: 'lt', text: lt }), h('span', { class: 'tx', text: a }), tag, (!revealed ? h('span', { class: 'dot' }) : null));
+      }
       if (revealed) b.setAttribute('tabindex', '-1');
       return b;
     }
-    var answers = h('div', { class: 'answers' }, q.answers.map(answerNode));
+    var answers = h('div', { class: (kind === 'tf' && !revealed) ? 'tfrow' : 'answers' }, q.answers.map(answerNode));
     var validate = null;
     // la sélection est mise à jour sur place (pas de nouvelle animation d'écran)
     selectHook = revealed ? null : function (i) {
@@ -237,23 +293,34 @@
     };
 
     if (!revealed) {
-      var side = h('div', { class: 'qside' }, photoBox(q.photo, 'a-zoom', true));
-      if (mode === 'individual' && state.players.length) side.appendChild(miniRanking());
-      s.appendChild(side);
+      if (kind !== 'tf') {
+        var side = h('div', { class: 'qside' }, photoBox(q.photo, 'a-zoom', kind !== 'visual'));
+        if (kind === 'abc' && indiv) side.appendChild(miniRanking());
+        s.appendChild(side);
+      }
       validate = h('button', { class: 'btn', 'aria-disabled': state.selected == null ? 'true' : 'false',
         onclick: function () { if (state.selected != null) reveal(); } }, 'Valider la réponse', icon('arrow'));
-      s.appendChild(h('div', { class: 'qmain' },
+      s.appendChild(h('div', { class: 'qmain' + (kind === 'tf' ? ' wide' : '') },
+        bonusTag(q),
         h('h1', { class: 'qtext a-up', text: q.q }), answers,
         h('div', { class: 'qactions' }, validate,
           h('button', { class: 'btn outline small', onclick: reveal }, 'Afficher la réponse'))));
     } else {
-      var left = h('div', { class: 'left' }, h('h1', { class: 'qtext', text: q.q }), answers);
-      var right = h('div', { class: 'right' }, photoBox(q.photo, 'a-zoom', true),
-        h('div', { class: 'savez' }, h('h2', null, icon('bulb'), 'Le saviez-vous ?'), h('p', { text: q.explanation })));
+      var left = h('div', { class: 'left' }, bonusTag(q), h('h1', { class: 'qtext', text: q.q }), answers);
+      var right = h('div', { class: 'right' });
+      if (kind === 'tf') {
+        var yes = q.correct === 0;
+        right.appendChild(h('div', { class: 'verdict ' + (yes ? 'v' : 'f') }, icon(yes ? 'check' : 'cross'), yes ? 'C’est VRAI' : 'C’est FAUX'));
+      } else {
+        if (kind === 'visual' && q.title) {
+          right.appendChild(h('div', { class: 'verdict v place' }, h('img', { class: 'thumb', src: PHOTOS[q.photo].src, alt: '' }), h('span', { text: q.title })));
+        } else right.appendChild(photoBox(q.photo, 'a-zoom', true));
+      }
+      right.appendChild(h('div', { class: 'savez' + (q.explanation.length > 190 ? ' long' : '') }, h('h2', null, icon('bulb'), kind === 'tf' ? 'Explication' : 'Le saviez-vous ?'), h('p', { text: q.explanation })));
       s.appendChild(h('div', { class: 'qmain' }, left, right));
-      var last = state.idx === Q.length - 1;
-      var nextBtn = h('button', { class: 'btn orange', onclick: next }, last ? 'Voir le résultat' : 'Question suivante', icon('arrow'));
-      if (mode === 'individual' && state.players.length) s.appendChild(awardPanel(nextBtn));
+      var lastQ = state.idx === N - 1;
+      var nextBtn = h('button', { class: 'btn orange', onclick: next }, lastQ ? (indiv ? 'Voir le classement final' : 'Terminer le quiz') : (roundInfo(state.idx).last ? 'Manche suivante' : 'Question suivante'), icon('arrow'));
+      if (indiv) s.appendChild(awardPanel(nextBtn, q));
       else s.appendChild(h('div', { class: 'award', style: 'background:none;align-items:flex-end;padding:0 0 4px' }, nextBtn));
     }
     show(s);
@@ -276,77 +343,101 @@
 
   function reveal() { state.phase = 'revealed'; state.awarded = {}; save(); question(); }
 
-  function awardPanel(nextBtn) {
-    var n = state.players.length;
-    var size = n <= 6 ? { cols: 3, h: 104, f: 34, sm: true } : n <= 10 ? { cols: 5, h: 92, f: 30, sm: true }
-      : n <= 15 ? { cols: 5, h: 76, f: 28 } : n <= 20 ? { cols: 5, h: 70, f: 26 } : { cols: 6, h: 64, f: 24 };
+  function awardPanel(nextBtn, q) {
+    var step = q.points, n = state.players.length;
+    var size = n <= 4 ? { cols: n, h: 104, f: 34, sm: true } : n <= 6 ? { cols: 3, h: 104, f: 34, sm: true } : n <= 10 ? { cols: 5, h: 92, f: 30, sm: true }
+      : n <= 15 ? { cols: 5, h: 72, f: 28 } : n <= 20 ? { cols: 5, h: 64, f: 25 } : { cols: 6, h: 58, f: 22 };
     var grid = h('div', { class: 'grid', style: 'grid-template-columns:repeat(' + size.cols + ',1fr);--h:' + size.h + 'px;--f:' + size.f + 'px' });
-    var nodes = {};
     state.players.forEach(function (p) {
       var nm = h('div', { class: 'nm' }, p.name);
-      var sc = size.sm ? h('small', { text: p.score + ' pt' + (p.score > 1 ? 's' : '') }) : null;
+      var sc = size.sm ? h('small', { text: '' }) : null;
       if (sc) nm.appendChild(sc);
-      var plus = h('button', { 'aria-label': 'Ajouter 1 point à ' + p.name }), minus = h('button', { class: 'minus', 'aria-label': 'Retirer 1 point à ' + p.name, text: '−1' });
-      plus.className = 'plus';
+      var plus = h('button', { class: 'plus', 'aria-label': 'Ajouter ' + step + ' point' + (step > 1 ? 's' : '') + ' à ' + p.name });
+      var minus = h('button', { class: 'minus', 'aria-label': 'Corriger : retirer ' + step + ' point' + (step > 1 ? 's' : '') + ' à ' + p.name, text: '−' + step });
       var chip = h('div', { class: 'pchip' }, nm, minus, plus);
       function paint() {
         var d = state.awarded[p.id] || 0;
-        plus.textContent = d > 0 ? '✓ +' + d : d < 0 ? '+1 (' + d + ')' : '+1';
+        plus.textContent = d > 0 ? '✓ +' + d : d < 0 ? '−' + (-d) : '+' + step;
         chip.classList.toggle('got', d > 0);
         var cur = state.players.filter(function (x) { return x.id === p.id; })[0];
         if (sc) sc.textContent = cur.score + ' pt' + (cur.score > 1 ? 's' : '');
       }
-      plus.addEventListener('click', function () { change(p.id, +1); paint(); });
-      minus.addEventListener('click', function () { change(p.id, -1); paint(); });
-      nodes[p.id] = paint;
+      plus.addEventListener('click', function () { change(p.id, +step); paint(); });
+      minus.addEventListener('click', function () { change(p.id, -step); paint(); });
       paint();
       grid.appendChild(chip);
     });
+    // −N est un outil de correction de l'animateur (annuler une attribution), jamais une pénalité.
     function change(id, d) {
       var cur = state.players.filter(function (x) { return x.id === id; })[0];
-      if (d < 0 && cur.score === 0) return; // pas de score négatif
+      var before = cur.score;
       state.players = L.adjust(state.players, id, d);
-      state.awarded[id] = (state.awarded[id] || 0) + d;
+      var applied = state.players.filter(function (x) { return x.id === id; })[0].score - before;
+      if (!applied) return;
+      state.awarded[id] = (state.awarded[id] || 0) + applied;
       save();
     }
     return h('div', { class: 'award' },
-      h('div', { class: 'row1' }, h('h2', { text: 'Qui a trouvé la bonne réponse ?' }), nextBtn), grid);
+      h('div', { class: 'row1' }, h('h2', { text: 'Qui a trouvé la bonne réponse ?' + (step > 1 ? ' (' + step + ' points)' : '') }), nextBtn), grid);
   }
 
   function next() {
-    if (state.idx >= Q.length - 1) { state.screen = 'final'; state.phase = 'choose'; render(); return; }
-    state.idx++; state.phase = 'choose'; state.selected = null; state.awarded = {};
-    render();
+    var info = roundInfo(state.idx), indiv = state.mode === 'individual' && state.players.length > 0;
+    if (state.idx >= N - 1) {
+      if (indiv) { state.rankMode = 'finale'; go('ranking'); } else go('final');
+      return;
+    }
+    state.idx++; state.selected = null; state.awarded = {}; state.phase = firstPhase(Q[state.idx]);
+    if (info.last) {
+      if (indiv && (info.r === 1 || info.r === 2)) { state.rankMode = 'between'; go('ranking'); }
+      else go('intro');
+    } else go('question');
   }
 
   /* ---------- classement ---------- */
   function ranking() {
+    var mode = state.rankMode || 'peek';
     var rows = L.ranking(state.players);
     var n = rows.length;
     var twoCols = n > 8;
     var rowsPerCol = twoCols ? Math.ceil(n / 2) : Math.max(n, 1);
-    var avail = 560; // hauteur de liste approximative
+    var avail = 560;
     var rh = Math.max(46, Math.min(84, Math.floor((avail - (rowsPerCol - 1) * 12) / rowsPerCol)));
     var rf = rh >= 70 ? 34 : rh >= 56 ? 30 : 26;
     var max = Math.max.apply(null, rows.map(function (r) { return r.player.score; }).concat([1]));
     var list = h('div', { class: 'rlist', style: '--rows:' + rowsPerCol + ';--rh:' + rh + 'px;--rf:' + rf + 'px;grid-template-columns:' + (twoCols ? '1fr 1fr' : '1fr') });
-    var bars = [];
+    var bars = [], step = mode === 'finale' ? Math.min(0.45, 6 / Math.max(n, 1)) : 0.05;
     rows.forEach(function (r, i) {
       var bar = h('div', { class: 'bar' });
-      bars.push([bar, r.player.score / max]);
-      list.appendChild(h('div', { class: 'rrow' + (r.rank === 1 && r.player.score > 0 ? ' first' : ''), style: 'animation-delay:' + Math.min(i * 0.05, 0.6) + 's' },
+      // finale : on découvre le classement du dernier au premier
+      var delay = mode === 'finale' ? (n - 1 - i) * step : Math.min(i * 0.05, 0.6);
+      bars.push([bar, r.player.score / max, delay]);
+      list.appendChild(h('div', { class: 'rrow' + (r.rank === 1 && r.player.score > 0 ? ' first' : ''), style: 'animation-delay:' + delay + 's' },
         bar, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name }),
         h('span', { class: 'sc', text: r.player.score + ' pt' + (r.player.score > 1 ? 's' : '') })));
     });
-    var s = h('div', { class: 'screen rank' + (twoCols ? '' : ' withphoto') },
-      twoCols ? null : photoBox('montsegur', 'a-zoom', true),
+    var title = mode === 'finale' ? 'CLASSEMENT FINAL' : 'CLASSEMENT';
+    var subtitle = null, btn;
+    if (mode === 'between') {
+      var nr = Q[state.idx].round;
+      subtitle = nr === 3 ? 'Avant la finale' : 'Après la manche ' + nr;
+      btn = h('button', { class: 'btn', onclick: function () { go('intro'); } }, 'Continuer', icon('arrow'));
+    } else if (mode === 'finale') {
+      btn = h('button', { class: 'btn orange a-up', style: 'animation-delay:' + ((n * step) + 0.8) + 's', onclick: function () { go('final'); } }, 'Voir le podium', icon('arrow'));
+    } else {
+      btn = h('button', { class: 'btn', onclick: function () { go(prevScreen === 'ranking' ? 'question' : prevScreen); } }, 'Retour au quiz', icon('arrow'));
+    }
+    var withPhoto = !twoCols && mode !== 'finale';
+    var s = h('div', { class: 'screen rank' + (withPhoto ? ' withphoto' : '') },
+      withPhoto ? photoBox('montsegur', 'a-zoom', true) : null,
       h('div', { class: 'head' }, logo()),
       h('div', { class: 'wrap' },
-        h('h1', { class: 'title-serif a-up', text: 'CLASSEMENT' }),
+        h('h1', { class: 'title-serif a-up', text: title }),
+        subtitle ? h('div', { class: 'rsub', text: subtitle }) : null,
         n ? list : h('p', { class: 'hint', style: 'font-size:34px', text: 'Aucun participant.' }),
-        h('div', null, h('button', { class: 'btn', onclick: function () { go(prevScreen === 'ranking' ? 'question' : prevScreen); } }, 'Retour au quiz', icon('arrow')))));
+        h('div', null, btn)));
     show(s);
-    requestAnimationFrame(function () { requestAnimationFrame(function () { bars.forEach(function (b) { b[0].style.width = Math.max(b[1] * 100, 0) + '%'; }); }); });
+    requestAnimationFrame(function () { requestAnimationFrame(function () { bars.forEach(function (b) { b[0].style.transitionDelay = b[2] + 's'; b[0].style.width = Math.max(b[1] * 100, 0) + '%'; }); }); });
   }
 
   /* ---------- final ---------- */
@@ -359,7 +450,8 @@
       h('h1', { class: 'title-serif a-up', text: 'BRAVO À TOUS !' }),
       h('div', { class: 'subt a-up d1', text: 'Quiz — Les Cathares en Occitanie' }));
     if (!group) {
-      var top = rows.slice(0, 3);
+      var scored = rows.filter(function (r) { return r.player.score > 0; });
+      var top = (scored.length ? scored : rows).slice(0, 3);
       var pod = h('div', { class: 'podium' + (top.length === 1 ? ' solo' : '') });
       var colors = { 1: '#DA8548', 2: '#9A9FA2', 3: '#C58A5A' };
       top.forEach(function (r, i) {
@@ -384,7 +476,7 @@
   }
   function replay() {
     state.players = L.resetScores(state.players);
-    state.idx = 0; state.phase = 'choose'; state.selected = null; state.awarded = {};
+    state.idx = 0; state.phase = firstPhase(Q[0]); state.selected = null; state.awarded = {}; state.rankMode = 'peek';
     lastProgress = 0;
     go('players');
   }
@@ -425,10 +517,16 @@
     var tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || e.ctrlKey || e.metaKey || e.altKey) return;
     var k = e.key.toLowerCase();
-    if (k === 'f') { toggleFull(); return; }
+    var tfChoose = state.screen === 'question' && state.phase === 'choose' && Q[state.idx].kind === 'tf';
+    if (k === 'f' && !tfChoose) { toggleFull(); return; } // (manche Vrai/Faux : F = FAUX)
+    if (state.screen === 'intro' && k === 'enter') { startRound(); return; }
+    if (state.screen === 'ranking' && k === 'enter' && state.rankMode !== 'peek') { if (state.rankMode === 'between') go('intro'); else go('final'); return; }
     if (state.screen === 'question') {
-      if (state.phase === 'choose') {
-        var i = { a: 0, b: 1, c: 2, '1': 0, '2': 1, '3': 2 }[k];
+      var q = Q[state.idx];
+      if (state.phase === 'look') { if (k === 'enter') { state.phase = 'choose'; save(); question(); } }
+      else if (state.phase === 'choose') {
+        var map = q.kind === 'tf' ? { v: 0, f: 1, '1': 0, '2': 1 } : { a: 0, b: 1, c: 2, '1': 0, '2': 1, '3': 2 };
+        var i = map[k];
         if (i != null) selectAnswer(i);
         else if (k === 'enter' && state.selected != null) reveal();
       } else if (k === 'enter' && document.activeElement && document.activeElement.tagName !== 'BUTTON') next();
@@ -440,5 +538,5 @@
   fit();
   load();
   render();
-  window.__quiz = { get state() { return state; } }; // utile pour les tests
+  window.__quiz = { get state() { return state; }, jump: function (idx, phase) { state.idx = idx; state.phase = phase; state.selected = null; state.awarded = {}; go('question'); } }; // utile pour les tests
 })();

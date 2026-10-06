@@ -228,3 +228,74 @@ button, input { font-family: inherit; }
 .rev.group .savez p { font-size: 34px; }
 .final h1 { top: 140px; }
 .final .subt { top: 255px; }
+
+/* ======== v2 : manches, visuel, vrai/faux, bonus ======== */
+.head { gap: 28px; }
+.progwrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ptext { font-size: 24px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.progress { position: relative; }
+.progress b { position: absolute; top: 0; bottom: 0; width: 4px; margin-left: -2px; background: var(--bg); }
+.progress i { position: relative; z-index: 1; }
+.progress b { z-index: 2; }
+.icon-btn { padding: 0 22px; font-size: 25px; }
+.bonus { align-self: flex-start; display: inline-block; background: var(--orange-dark); color: #fff; font-weight: 800; font-size: 32px; letter-spacing: .04em; padding: 12px 34px; border-radius: 999px; box-shadow: 0 6px 16px rgba(184,90,27,.28); }
+.rev .bonus { font-size: 26px; padding: 8px 26px; }
+.intro h1 .t { font-size: 76px; white-space: normal; margin-top: 8px; }
+.intro h1 .q { font-size: 110px; }
+.intro .sub { font-size: 40px; }
+.intro .place { font-size: 32px; }
+.rsub { font-size: 40px; color: var(--orange-dark); font-weight: 700; margin-top: 8px; font-family: var(--serif); }
+.rank .rlist { margin-top: 16px; }
+
+/* visuel */
+.lookphoto { position: absolute; left: 60px; top: 150px; width: 1060px; bottom: 60px; border-radius: 44px; }
+.lookside { position: absolute; left: 1180px; right: 70px; top: 150px; bottom: 60px; display: flex; flex-direction: column; justify-content: center; gap: 34px; }
+.vis:not(.rev) .qside { width: 740px; }
+.vis:not(.rev) .qmain { left: 840px; right: 70px; }
+.vis:not(.rev) .qtext { font-size: 52px; }
+.vis:not(.rev) .btn { font-size: 32px; padding: 0 40px; white-space: nowrap; }
+.vis:not(.rev) .btn.small { font-size: 26px; padding: 0 30px; }
+.rev.vis .left { flex: 1; } .rev.vis .right { flex: 1.15; }
+.verdict .thumb { width: 150px; height: 104px; object-fit: cover; border-radius: 16px; flex: none; }
+.verdict.place span { line-height: 1.15; }
+
+/* vrai / faux */
+.tf .qmain.wide { left: 90px; right: 90px; align-items: center; gap: 44px; }
+.tf .qmain.wide .qtext { font-size: 64px; text-align: center; max-width: 1560px; }
+.tfrow { display: flex; gap: 60px; width: 100%; justify-content: center; }
+.tfbtn { position: relative; flex: 1; max-width: 780px; height: 270px; border-radius: 48px; border: 8px solid; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; font-weight: 800; box-shadow: var(--shadow); transition: background .3s, color .3s, transform .3s; }
+.tfbtn .ic svg { width: 84px; height: 84px; }
+.tfbtn .big { font-size: 84px; letter-spacing: .06em; line-height: 1; }
+.tfbtn .chosen { position: absolute; bottom: 14px; font-size: 26px; font-weight: 700; opacity: 0; }
+.tfbtn.v { border-color: var(--green); color: var(--green-dark); }
+.tfbtn.f { border-color: var(--orange-dark); color: var(--orange-dark); }
+.tfbtn:hover { transform: translateY(-3px); }
+.tfbtn.sel.v { background: var(--green); color: #fff; } .tfbtn.sel.f { background: var(--orange-dark); color: #fff; }
+.tfbtn.sel .chosen { opacity: 1; }
+.tfbtn:focus-visible { outline: 5px solid #1B3A38; outline-offset: 5px; }
+.tf.rev .answer .lt { font-size: 34px; }
+.verdict { display: flex; align-items: center; gap: 18px; border-radius: 28px; padding: 18px 30px; font-size: 52px; font-weight: 800; font-family: var(--serif); text-transform: uppercase; border: 4px solid; animation: zoomIn .4s ease both; }
+.verdict svg { width: 60px; height: 60px; flex: none; }
+.verdict.v { background: var(--green-soft); border-color: var(--green); color: var(--green-dark); }
+.verdict.f { background: #FBE9D8; border-color: var(--orange-dark); color: #8A3F0C; }
+.verdict.place { font-size: 36px; text-transform: none; padding: 14px 26px; }
+.verdict.place svg { width: 44px; height: 44px; }
+.tf.rev .right { padding-top: 0; }
+.tf.rev .qtext { font-size: 44px; }
+.rev .right .photo { height: 200px; }
+.savez.long p { font-size: 26px; line-height: 1.34; }
+.savez.long { padding: 18px 28px; }
+.rev.group .right .photo { height: 330px; }
+.tf.rev.group .savez p { font-size: 36px; }
+.progwrap .progress { flex: none; width: 100%; }
+.intro .col { width: 790px; }
+.rev.many .answer { min-height: 76px; font-size: 36px; padding-top: 6px; padding-bottom: 6px; }
+.rev.many .answer.long { font-size: 30px; }
+.rev.many .qtext { font-size: 36px; }
+.rev.many .answers { gap: 10px; }
+.rev.many .award { bottom: 24px; padding: 14px 24px 16px; }
+.rev.many .award h2 { font-size: 36px; }
+.rev.many .award .btn { height: 72px; font-size: 30px; }
+.rev.many .bonus { font-size: 24px; padding: 6px 22px; }
+.rev.many .qmain { top: 140px; }
