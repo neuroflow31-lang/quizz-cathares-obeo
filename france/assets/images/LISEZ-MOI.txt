@@ -1,0 +1,3 @@
+Déposez ici les images du quiz « La France ».
+Noms attendus : home.jpg, ch1.jpg … ch6.jpg, c1q1.jpg … c6q6.jpg (voir france/CONTENU.md).
+Sans image, un décor OBEO de secours est affiché automatiquement.

@@ -22,4 +22,11 @@ const dist = path.join(root, 'dist');
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(dist, { recursive: true });
 for (const f of ['index.html', 'css', 'js', 'assets']) fs.cpSync(path.join(root, f), path.join(dist, f), { recursive: true });
+// Quiz « La France » (dossier autonome) : validation de la structure puis copie
+const fr = require(path.join(root, 'france/js/model.js')).build(require(path.join(root, 'france/js/quiz-data.js')));
+fr.errors.forEach((e) => fail('France : ' + e));
+if (fr.questions.length !== 40) fail('France : 40 épreuves attendues');
+if (errors) process.exit(1);
+fs.cpSync(path.join(root, 'france'), path.join(dist, 'france'), { recursive: true });
+console.log(`✓ France : ${fr.questions.length} épreuves, ${fr.chapters.length} chapitres${fr.placeholders ? ' (' + fr.placeholders + ' à remplacer)' : ''} — copié dans dist/france/`);
 console.log(`✓ Données valides (${QUESTIONS.length} épreuves, manches ${per.join('+')}) — application copiée dans dist/`);

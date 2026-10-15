@@ -1,3 +1,16 @@
+# Quiz OBEO — Toulouse Guillaumet
+
+Deux quiz indépendants, même moteur d'animation :
+
+| Quiz | Ouvrir | Contenu |
+|---|---|---|
+| **Les Cathares en Occitanie** | `index.html` (racine) | 25 épreuves, 4 manches |
+| **La France : histoire, patrimoine et grandes énigmes** | `france/index.html` | 40 épreuves, 6 chapitres, mode test animateur — guide : [`france/CONTENU.md`](france/CONTENU.md) |
+
+Commandes : `npm test` · `npm run build` (valide et copie les deux quiz dans `dist/`) · `npm run check:france` · `npm start` (http://localhost:5173/ et http://localhost:5173/france/).
+
+---
+
 # Quiz « Les Cathares en Occitanie » — OBEO Toulouse Guillaumet
 
 Application web autonome (HTML/CSS/JS, aucune dépendance, aucun backend, aucune base de données).
