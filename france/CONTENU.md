@@ -35,7 +35,7 @@ Le quiz s'ouvre avec **`france/index.html`** (double-clic) — le Quiz Cathares 
 - `source` : note interne (jamais affichée, visible seulement dans le mode test).
 
 ## Chapitres
-`CHAPTERS` (même fichier) : `title`, `hook` (phrase d'accroche de l'écran d'introduction — **textes provisoires neutres, à remplacer**), `count`, `image` (facultatif).
+`CHAPTERS` (même fichier) : `title`, `hook` (phrase d'accroche de l'écran d'introduction), `count`, `image` (facultatif).
 Classements intermédiaires : `CONFIG.rankingAfterChapters = [3, 5]` (après Rennes-le-Château et avant le dernier chapitre) et leurs libellés `rankingNotes`.
 
 ## Images
@@ -51,48 +51,48 @@ Placer les fichiers dans `france/assets/images/`. **Aucune configuration nécess
 Autre nom de fichier : renseigner `image: 'mon-fichier.jpg'` dans l'épreuve (accents et espaces acceptés). `imageFit: 'contain'` pour ne pas rogner une image (sinon `cover`). `credit: '© Auteur / Source'` affiche un crédit discret en bas de l'image.
 Format conseillé : JPG, 1920 px de large minimum (1920×1440 idéal), 4:3 ou 3:2, moins de 1,5 Mo.
 
-| Fichier | Chapitre | Type |
-|---|---|---|
-| `c1q1.jpg` | 1 | qcm |
-| `c1q2.jpg` | 1 | visual |
-| `c1q3.jpg` | 1 | tf |
-| `c1q4.jpg` | 1 | legend |
-| `c1q5.jpg` | 1 | qcm |
-| `c1q6.jpg` | 1 | reflection |
-| `c2q1.jpg` | 2 | qcm |
-| `c2q2.jpg` | 2 | tf |
-| `c2q3.jpg` | 2 | visual |
-| `c2q4.jpg` | 2 | legend |
-| `c2q5.jpg` | 2 | riddle |
-| `c2q6.jpg` | 2 | qcm |
-| `c2q7.jpg` | 2 | reflection |
-| `c3q1.jpg` | 3 | visual |
-| `c3q2.jpg` | 3 | qcm |
-| `c3q3.jpg` | 3 | legend |
-| `c3q4.jpg` | 3 | tf |
-| `c3q5.jpg` | 3 | riddle |
-| `c3q6.jpg` | 3 | qcm |
-| `c3q7.jpg` | 3 | reflection |
-| `c4q1.jpg` | 4 | qcm |
-| `c4q2.jpg` | 4 | visual |
-| `c4q3.jpg` | 4 | tf |
-| `c4q4.jpg` | 4 | qcm |
-| `c4q5.jpg` | 4 | legend |
-| `c4q6.jpg` | 4 | riddle |
-| `c4q7.jpg` | 4 | reflection |
-| `c5q1.jpg` | 5 | qcm |
-| `c5q2.jpg` | 5 | tf |
-| `c5q3.jpg` | 5 | visual |
-| `c5q4.jpg` | 5 | legend |
-| `c5q5.jpg` | 5 | qcm |
-| `c5q6.jpg` | 5 | riddle |
-| `c5q7.jpg` | 5 | reflection |
-| `c6q1.jpg` | 6 | visual |
-| `c6q2.jpg` | 6 | qcm |
-| `c6q3.jpg` | 6 | tf |
-| `c6q4.jpg` | 6 | legend |
-| `c6q5.jpg` | 6 | riddle |
-| `c6q6.jpg` | 6 | reflection |
+| Fichier | Épreuve | Type | Image |
+|---|---|---|---|
+| `c1q1.jpg` | Q1 · ch. 1 | qcm | facultative |
+| `c1q2.jpg` | Q2 · ch. 1 | visual | **oui (attendue)** |
+| `c1q3.jpg` | Q3 · ch. 1 | tf | facultative |
+| `c1q4.jpg` | Q4 · ch. 1 | qcm | facultative |
+| `c1q5.jpg` | Q5 · ch. 1 | legend | **oui (attendue)** |
+| `c1q6.jpg` | Q6 · ch. 1 | riddle | facultative |
+| `c2q1.jpg` | Q7 · ch. 2 | qcm | facultative |
+| `c2q2.jpg` | Q8 · ch. 2 | qcm | **oui (attendue)** |
+| `c2q3.jpg` | Q9 · ch. 2 | tf | facultative |
+| `c2q4.jpg` | Q10 · ch. 2 | legend | facultative |
+| `c2q5.jpg` | Q11 · ch. 2 | visual | **oui (attendue)** |
+| `c2q6.jpg` | Q12 · ch. 2 | reflection | facultative |
+| `c2q7.jpg` | Q13 · ch. 2 | qcm | facultative |
+| `c3q1.jpg` | Q14 · ch. 3 | qcm | **oui (attendue)** |
+| `c3q2.jpg` | Q15 · ch. 3 | qcm | **oui (attendue)** |
+| `c3q3.jpg` | Q16 · ch. 3 | reflection | facultative |
+| `c3q4.jpg` | Q17 · ch. 3 | visual | **oui (attendue)** |
+| `c3q5.jpg` | Q18 · ch. 3 | tf | facultative |
+| `c3q6.jpg` | Q19 · ch. 3 | legend | **oui (attendue)** |
+| `c3q7.jpg` | Q20 · ch. 3 | legend | facultative |
+| `c4q1.jpg` | Q21 · ch. 4 | qcm | facultative |
+| `c4q2.jpg` | Q22 · ch. 4 | tf | **oui (attendue)** |
+| `c4q3.jpg` | Q23 · ch. 4 | reflection | facultative |
+| `c4q4.jpg` | Q24 · ch. 4 | visual | **oui (attendue)** |
+| `c4q5.jpg` | Q25 · ch. 4 | qcm | facultative |
+| `c4q6.jpg` | Q26 · ch. 4 | tf | facultative |
+| `c4q7.jpg` | Q27 · ch. 4 | riddle | facultative |
+| `c5q1.jpg` | Q28 · ch. 5 | qcm | **oui (attendue)** |
+| `c5q2.jpg` | Q29 · ch. 5 | qcm | facultative |
+| `c5q3.jpg` | Q30 · ch. 5 | qcm | **oui (attendue)** |
+| `c5q4.jpg` | Q31 · ch. 5 | tf | facultative |
+| `c5q5.jpg` | Q32 · ch. 5 | legend | facultative |
+| `c5q6.jpg` | Q33 · ch. 5 | reflection | facultative |
+| `c5q7.jpg` | Q34 · ch. 5 | visual | **oui (attendue)** |
+| `c6q1.jpg` | Q35 · ch. 6 | qcm | facultative |
+| `c6q2.jpg` | Q36 · ch. 6 | qcm | **oui (attendue)** |
+| `c6q3.jpg` | Q37 · ch. 6 | tf | facultative |
+| `c6q4.jpg` | Q38 · ch. 6 | qcm | facultative |
+| `c6q5.jpg` | Q39 · ch. 6 | visual | **oui (attendue)** |
+| `c6q6.jpg` | Q40 · ch. 6 | qcm | **oui (attendue)** |
 
 Les images des types `visual` sont indispensables ; pour les autres types elles sont facultatives (affichées dans le panneau latéral).
 

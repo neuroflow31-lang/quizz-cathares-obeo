@@ -398,3 +398,15 @@ button, input { font-family: inherit; }
 .home h1 { margin-top: 36px; }
 .photo.fallback .mark { width: 40%; max-width: 330px; opacity: .22; }
 .photo.fallback img.mark { width: 40%; height: auto; max-width: 330px; object-fit: contain; animation: none; }
+
+/* Écrans d'introduction de chapitre : accroches longues (3 phrases) — tout doit tenir à l'écran, bouton compris */
+.intro .col { top: 50px; }
+.intro .logo { height: 130px; }
+.intro h1 { margin-top: 26px; }
+.intro h1 .t { font-size: 76px; }
+.intro .rule { margin: 26px 0; }
+.intro .sub { font-size: 34px; line-height: 1.32; }
+.intro .place { font-size: 28px; margin-top: 14px; }
+.intro .bonus { font-size: 28px; padding: 9px 28px; }
+.intro .btn { margin-top: 28px; height: 100px; }
+.intro .col { width: 770px; }

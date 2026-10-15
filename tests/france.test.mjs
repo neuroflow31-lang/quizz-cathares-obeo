@@ -18,10 +18,34 @@ test('France : 40 épreuves, 6 chapitres (6/7/7/7/7/6), aucune erreur de structu
   assert.equal(data.CONFIG.title, 'LA FRANCE');
   assert.equal(data.CONFIG.tagline, 'Six histoires vraies entre mystères, légendes et patrimoine');
 });
-test('France : les 6 formats sont présents et alternés (jamais 3 fois le même de suite)', () => {
+test('France : les 6 formats sont présents, dans l’ordre exact du contenu définitif (CONTENT-1)', () => {
   const types = new Set(m.questions.map(q => q.type));
   assert.deepEqual([...types].sort(), ['legend', 'qcm', 'reflection', 'riddle', 'tf', 'visual']);
-  m.questions.forEach((q, i) => { if (i > 1) assert.ok(!(q.type === m.questions[i - 1].type && q.type === m.questions[i - 2].type), 'trois fois ' + q.type + ' de suite en ' + q.id); });
+  const order = 'qcm visual tf qcm legend riddle | qcm qcm tf legend visual reflection qcm | qcm qcm reflection visual tf legend legend | qcm tf reflection visual qcm tf riddle | qcm qcm qcm tf legend reflection visual | qcm qcm tf qcm visual qcm'
+    .replace(/\|/g, ' ').split(/\s+/);
+  assert.deepEqual(m.questions.map(q => q.type), order);
+});
+test('France : contenu définitif — aucun texte provisoire, explication et anecdote sur chaque épreuve', () => {
+  assert.equal(m.placeholders, 0);
+  assert.deepEqual(m.warnings, []);
+  m.questions.forEach(q => { assert.ok(q.explanation.length > 20, q.id); assert.ok(q.anecdote.length > 20, q.id); assert.ok(!/remplacer/.test(q.q + q.explanation + q.anecdote + q.answers.join()), q.id); });
+  m.chapters.forEach(c => assert.ok(c.hook.length > 40 && !/remplacer/.test(c.hook), 'accroche ch' + c.no));
+});
+test('France : bonnes réponses — 40 réponses du contenu définitif, A/B/C répartis', () => {
+  const exp = ['Louis XIV', 'La Bastille', 'FAUX', 'Eustache Dauger', 'LÉGENDE', 'Le secret entourant l’identité et le motif de l’emprisonnement',
+    '1764-1767', 'Louis XV', 'VRAI', 'LÉGENDE', 'La Bête du Gévaudan', 'Les attaques se répètent pendant plusieurs années', 'Un ou plusieurs grands canidés',
+    'L’Aude', 'Prêtre', 'Il finance des constructions importantes malgré les revenus modestes attendus d’un curé rural', 'La Tour Magdala', 'FAUX', 'FAIT', 'LÉGENDE',
+    '8h30', 'VRAI', 'Parce que la proximité avec le roi traduit le rang et le privilège', 'La chambre du Roi', '22h', 'VRAI', 'Un ensemble de règles permettant aussi d’organiser et contrôler la Cour',
+    'Rouen', '19 ans', 'Charles VII', 'VRAI', 'FAIT', 'Ses procès ont produit énormément de témoignages et d’interrogatoires', 'Le sacre de Charles VII à Reims',
+    'À cause de graves problèmes de salubrité dans les cimetières', 'Les Saints-Innocents', 'VRAI', 'En hommage aux catacombes de Rome', '20 mètres', 'Nadar'];
+  assert.deepEqual(m.questions.map(q => q.answers[q.correct]), exp);
+  const cnt = [0, 0, 0]; m.questions.filter(q => q.kind === 'abc').forEach(q => cnt[q.correct]++);
+  assert.deepEqual(cnt, [9, 9, 10]);
+});
+test('France : images attendues renseignées pour les épreuves « IMAGE OUI »', () => {
+  const withImg = m.questions.filter(q => q.explicitImage).map(q => q.n + 1);
+  assert.deepEqual(withImg, [2, 5, 8, 11, 14, 15, 17, 19, 22, 24, 28, 30, 34, 36, 39, 40]);
+  m.questions.filter(q => q.type === 'visual').forEach(q => assert.ok(q.explicitImage, 'visuel sans image : ' + q.id));
 });
 test('France : points — 1 point, sauf les 3 dernières épreuves des Catacombes à 2 points', () => {
   m.questions.forEach((q, i) => assert.equal(q.points, i >= 37 ? 2 : 1, q.id));
