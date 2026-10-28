@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs . 5173",
-    "test": "node --test tests/logic.test.mjs tests/france.test.mjs",
+    "test": "node --test tests/logic.test.mjs tests/france.test.mjs tests/animaux.test.mjs",
     "build": "node scripts/build.mjs",
     "check:france": "node scripts/check-france.mjs",
+    "check:animaux": "node scripts/check-animaux.mjs",
     "preview": "node scripts/serve.mjs dist 4173"
   }
 }

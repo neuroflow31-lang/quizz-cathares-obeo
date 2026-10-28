@@ -1,0 +1,2 @@
+Images du quiz « Le monde animal » : voir animaux/CONTENU.md (noms exacts dans animaux/js/quiz-data.js).
+Sans image, un décor OBEO de secours est affiché automatiquement.

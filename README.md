@@ -6,8 +6,9 @@ Deux quiz indépendants, même moteur d'animation :
 |---|---|---|
 | **Les Cathares en Occitanie** | `index.html` (racine) | 25 épreuves, 4 manches |
 | **La France : histoire, patrimoine et grandes énigmes** | `france/index.html` | 40 épreuves, 6 chapitres, mode test animateur — guide : [`france/CONTENU.md`](france/CONTENU.md) |
+| **Le monde animal** | `animaux/index.html` | 36 questions, 6 manches (finale à 2 points), mode test animateur — guide : [`animaux/CONTENU.md`](animaux/CONTENU.md) |
 
-Commandes : `npm test` · `npm run build` (valide et copie les deux quiz dans `dist/`) · `npm run check:france` · `npm start` (http://localhost:5173/ et http://localhost:5173/france/).
+Commandes : `npm test` · `npm run build` (valide et copie les deux quiz dans `dist/`) · `npm run check:france` · `npm run check:animaux` · `npm start` (http://localhost:5173/, /france/ et /animaux/).
 
 ---
 
