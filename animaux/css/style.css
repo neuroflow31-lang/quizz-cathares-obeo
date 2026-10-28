@@ -434,3 +434,17 @@ button, input { font-family: inherit; }
 .home.france-home .rule { margin: 26px 0; }
 .home.france-home .sub { font-size: 34px; }
 .home.france-home .btn { margin-top: 30px; }
+/* podium : « Nom — X / 42 » */
+.pod .nm { font-size: 34px; white-space: normal; line-height: 1.15; margin-bottom: 14px; }
+/* révélation : les trois zones doivent tenir au-dessus du bouton, même avec des textes longs */
+.zone { padding: 16px 26px; border-radius: 26px; }
+.zone h2 { font-size: 30px; margin-bottom: 6px; }
+.zone p { font-size: 27px; line-height: 1.32; }
+.zone.long p { font-size: 24px; }
+.zrep p { font-size: 30px; }
+.zrep.long p { font-size: 25px; font-weight: 700; }
+.zrep .thumb { width: 130px; height: 98px; }
+.rev .right { gap: 14px; }
+/* énigmes à indices : question + indices + 3 choix à l'écran */
+.qmain .clues { gap: 6px; }
+.qmain .clues li { font-size: 28px; }

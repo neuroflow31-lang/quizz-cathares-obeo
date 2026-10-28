@@ -54,7 +54,7 @@ async function playAll(pg, group) {
     assert.ok(await vis(pg, '.zrep') && await vis(pg, '.zwhy'), 'zones Réponse + Pourquoi visibles');
     if (q.anecdote) { seen.anecdotes++; assert.ok(await pg.locator('.zsav').count() === 1, 'zone Le saviez-vous'); assert.match(await pg.locator('.zsav h2').innerText(), /saviez-vous/i); }
     else assert.equal(await pg.locator('.zsav').count(), 0);
-    assert.match(await pg.locator('.zrep p').innerText(), new RegExp(q.answers[q.correct].replace(/[.*+?^${}()|[\]\\]/g, '\\$&').slice(0, 20)));
+    assert.match(await pg.locator('.zrep p').innerText(), new RegExp((q.short || q.answers[q.correct]).replace(/[.*+?^${}()|[\]\\]/g, '\\$&').slice(0, 20)));
     if (!group) {
       assert.equal(await pg.locator('.award').count(), 0, 'les points ne sont proposés qu’après le bouton « Attribuer les points »');
       await pg.click('text=Attribuer les points'); await pg.waitForTimeout(80);
@@ -94,9 +94,9 @@ async function playAll(pg, group) {
     const { seen, expect } = await playAll(pg, false);
     report.indiv = seen;
     assert.equal(seen.intros, 6); assert.equal(seen.between, 2); assert.equal(seen.bonus, 6);
-    assert.deepEqual(Object.keys(seen.types).sort(), ['challenge', 'qcm', 'reflection', 'riddle', 'situation', 'tf', 'visual']);
+    assert.deepEqual(Object.keys(seen.types).sort(), ['challenge', 'deduction', 'qcm', 'reflection', 'riddle', 'situation', 'synthesis', 'tf', 'visual']);
     // classement final animé puis podium progressif 3e → 2e → 1er
-    assert.ok(await pg.locator('text=CLASSEMENT FINAL').count());
+    assert.ok(await pg.locator('text=EXPÉDITION TERMINÉE !').count());
     assert.ok(await pg.locator('.rrow >> text=42 / 42').count(), 'classement final : 42 / 42');
     await pg.waitForTimeout(3500);
     const s = await st(pg);
@@ -114,8 +114,7 @@ async function playAll(pg, group) {
     assert.equal(await pg.locator('.pod.p1:not(.hide)').count(), 0, '1er pas encore révélé');
     await pg.click('text=Révéler la 1re place'); await pg.waitForTimeout(300);
     assert.equal(await pg.locator('.pod:not(.hide)').count(), 3);
-    assert.equal(await pg.locator('.pod.p1 .nm').innerText(), 'Marie');
-    assert.equal(await pg.locator('.pod.p1 .sc').innerText(), '42 / 42', 'podium : score sur 42');
+    assert.equal(await pg.locator('.pod.p1 .nm').innerText(), 'Marie — 42 / 42', 'podium : Nom — X / 42');
     assert.ok(await pg.locator('.fullrank >> text=42 / 42').count(), 'classement complet : 42 / 42');
     assert.ok(await pg.locator('text=Merci pour votre participation').count() && await pg.locator('text=Classement complet').count());
     await pg.click('text=Rejouer'); await pg.waitForTimeout(200);
@@ -171,8 +170,8 @@ async function playAll(pg, group) {
       else assert.equal(await pg.locator(sel + '.fallback').count(), 1, 'décor de secours : ' + q.id);
       if (exists) { const alt = await pg.locator(sel + ' img').getAttribute('alt'); assert.ok(/^Illustration/.test(alt), 'alt générique ' + q.id); }
     }
-    for (const n of [24, 25, 26, 27]) { await pg.evaluate(i => window.__quiz.jump(i), n); await pg.waitForTimeout(250); assert.ok(await loaded('.qside .photo img'), 'Q' + (n + 1) + ' : chimpanzé / fourmis / axolotl / abeilles'); }
-    await pg.evaluate(() => window.__quiz.jump(28)); await pg.waitForTimeout(250);
+    for (const n of [24, 25, 26, 27]) { await pg.evaluate(i => window.__quiz.jump(i, 'choose'), n); await pg.waitForTimeout(250); assert.ok(await loaded('.qside .photo img'), 'Q' + (n + 1) + ' : chimpanzé / fourmis / axolotl / abeilles'); }
+    await pg.evaluate(() => window.__quiz.jump(28, 'choose')); await pg.waitForTimeout(250);
     assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'Q29 sans image : décor OBEO');
     await pg.close();
 

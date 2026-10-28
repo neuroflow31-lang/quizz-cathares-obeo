@@ -7,10 +7,12 @@
     reflection: { kind: 'abc', think: true,  label: 'Question de réflexion' },
     situation:  { kind: 'abc', think: true,  label: 'Situation' },
     challenge:  { kind: 'abc', think: true,  label: 'Mini-défi' },
+    deduction:  { kind: 'abc', think: true,  label: 'Déduction' },
+    synthesis:  { kind: 'abc', think: true,  label: 'Question de synthèse' },
     tf:         { kind: 'two', think: false, label: 'Vrai ou faux ?', labels: ['VRAI', 'FAUX'] },
     legend:     { kind: 'two', think: false, label: 'Fait ou légende ?', labels: ['FAIT', 'LÉGENDE'] }
   };
-  var TYPE_SHORT = { qcm: 'QCM', visual: 'Visuel', riddle: 'Énigme', reflection: 'Réflexion', situation: 'Situation', challenge: 'Mini-défi', tf: 'V/F', legend: 'Légende' };
+  var TYPE_SHORT = { qcm: 'QCM', visual: 'Visuel', riddle: 'Énigme', reflection: 'Réflexion', situation: 'Situation', challenge: 'Mini-défi', deduction: 'Déduction', synthesis: 'Synthèse', tf: 'V/F', legend: 'Légende' };
 
   function enc(path) { return String(path).split('/').map(function (s) { return encodeURIComponent(s).replace(/'/g, '%27'); }).join('/'); }
   function strip(s) { return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim(); }

@@ -61,3 +61,31 @@ test('Animaux : score maximal 42 (Q1-Q30 à 1 point, Q31-Q36 à 2 points), affic
   assert.equal(m.questions.reduce((a, q) => a + q.points, 0), 42);
   assert.ok(/function pts\(n\) \{ return n \+ ' \/ ' \+ MAX; \}/.test(fs.readFileSync(path.join(root, 'animaux/js/app.js'), 'utf8')));
 });
+
+test('Animaux : 36 / 36 questions complètes, aucun texte provisoire, introductions des 6 manches', () => {
+  assert.equal(m.placeholders, 0);
+  assert.deepEqual(m.warnings, []);
+  const src = fs.readFileSync(path.join(root, 'animaux/js/quiz-data.js'), 'utf8');
+  assert.ok(!/remplacer/.test(src), 'aucun « à remplacer »');
+  m.questions.forEach(q => assert.ok(q.q && q.explanation.length > 20 && q.anecdote.length > 20, q.id));
+  m.chapters.forEach(c => assert.ok(c.hook.length > 60 && !/^\[/.test(c.hook), 'intro manche ' + c.no));
+  assert.match(m.chapters[4].hook, /^Se soigner paraît être une invention humaine\. Pourtant, certains animaux choisissent des plantes/);
+  assert.match(m.chapters[5].hook, /^Vous êtes maintenant devenus les naturalistes de l’expédition OBEO/);
+});
+test('Animaux : Q25 à Q36 — réponses, types, points et images du contenu fourni', () => {
+  const qs = m.questions.slice(24);
+  assert.deepEqual(qs.map(q => q.answers[q.correct]), ['Certaines possèdent des propriétés médicinales', 'Amputer la partie blessée', 'Notamment un membre complet', 'La propolis', 'Non', 'FAUX',
+    'Le poulpe', 'La fourmi charpentière', 'Le suricate', 'Les éléphants pourraient utiliser des appels individualisés comparables à des noms', 'L’axolotl',
+    'Certains chimpanzés recherchent des plantes bioactives lorsqu’ils sont malades ou blessés']);
+  assert.deepEqual(qs.map(q => 'ABC'[q.correct] || ''), ['B', 'A', 'B', 'A', 'B', 'B', 'B', 'B', 'A', 'A', 'A', 'B']);
+  assert.deepEqual(qs.map(q => q.type).join(' '), 'situation qcm qcm qcm deduction tf riddle deduction riddle deduction riddle synthesis');
+  assert.deepEqual(qs.map(q => q.points), [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+  assert.deepEqual(m.questions[30].clues, ['Je possède trois cœurs.', 'Mon sang utilise une molécule contenant du cuivre.', 'Je peux résoudre certains problèmes.']);
+  qs.forEach(q => assert.ok(q.short.length > 2, 'texte ✅ Réponse ' + q.id));
+});
+test('Animaux : anecdotes Q1, Q2, Q5 corrigées (plus de réponse anticipée de Q9, Q7, Q21)', () => {
+  assert.match(m.questions[0].anecdote, /^Chez certaines espèces, la langue du caméléon/);
+  assert.match(m.questions[1].anecdote, /^Toutes les chauves-souris ne mangent pas des insectes/);
+  assert.match(m.questions[4].anecdote, /^Le hurlement permet notamment aux loups/);
+  assert.ok(!/yeux/.test(m.questions[0].anecdote) && !/écholocation/i.test(m.questions[1].anecdote) && !/famil/i.test(m.questions[4].anecdote));
+});

@@ -228,7 +228,7 @@
         h('div', { class: 'rule a-up d2' }),
         h('p', { class: 'sub a-up d2', text: c.hook }),
         h('div', { class: 'place a-up d3', text: meta }),
-        bonus && state.mode === 'individual' ? h('div', { class: 'bonus a-zoom d3', style: 'margin-top:20px', text: allBonus ? '★ CHAQUE BONNE RÉPONSE : 2 POINTS' : '★ LES ' + bonus + ' DERNIÈRES QUESTIONS : 2 POINTS' }) : null,
+        bonus && state.mode === 'individual' ? h('div', { class: 'bonus a-zoom d3', style: 'margin-top:20px', text: allBonus ? '★ FINALE — CHAQUE BONNE RÉPONSE VAUT 2 POINTS' : '★ LES ' + bonus + ' DERNIÈRES QUESTIONS : 2 POINTS' }) : null,
         h('div', { class: 'a-up d4' }, h('button', { class: 'btn', onclick: startChapter }, 'Commencer', icon('arrow')))));
     show(s);
   }
@@ -352,7 +352,7 @@
       // Trois zones après validation : ✅ Réponse · 💡 Pourquoi ? · 🐾 Le saviez-vous ?
       var goodTxt = two ? q.answers[q.correct] : LETTERS[q.correct] + ' — ' + q.answers[q.correct];
       var thumb = (q.type === 'visual' || q.explicitImage) ? h('img', { class: 'thumb', src: q.image, alt: '', onerror: function () { this.remove(); } }) : null;
-      right.appendChild(h('div', { class: 'zone zrep' }, thumb, h('div', null, h('h2', { text: '✅ Réponse' }), h('p', { text: q.short || goodTxt }))));
+      right.appendChild(h('div', { class: 'zone zrep' + ((q.short || goodTxt).length > 70 ? ' long' : '') }, thumb, h('div', null, h('h2', { text: '✅ Réponse' }), h('p', { text: q.short || goodTxt }))));
       if (q.explanation) right.appendChild(h('div', { class: 'zone zwhy' + (q.explanation.length > 190 ? ' long' : '') }, h('h2', { text: '💡 Pourquoi ?' }), h('p', { text: q.explanation })));
       if (q.anecdote) right.appendChild(h('div', { class: 'zone zsav' + (q.anecdote.length > 190 ? ' long' : '') }, h('h2', { text: '🐾 Le saviez-vous ?' }), h('p', { text: q.anecdote })));
       s.appendChild(h('div', { class: 'qmain' }, left, right));
@@ -458,16 +458,16 @@
       var delay = mode === 'finale' ? (n - 1 - i) * step : Math.min(i * 0.05, 0.6);
       bars.push([bar, r.player.score / max, delay]);
       list.appendChild(h('div', { class: 'rrow' + (r.rank === 1 && r.player.score > 0 ? ' first' : ''), style: 'animation-delay:' + delay + 's' },
-        bar, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name }),
-        h('span', { class: 'sc', text: pts(r.player.score) })));
+        bar, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name + ' — ' + pts(r.player.score) })));
     });
-    var title = mode === 'finale' ? 'CLASSEMENT FINAL' : 'CLASSEMENT';
+    var title = mode === 'finale' ? 'EXPÉDITION TERMINÉE !' : 'CLASSEMENT';
     var subtitle = null, btn;
     if (mode === 'between') {
       var cn = state.rankChapter || (Q[Math.max(state.idx - 1, 0)].chapterNo);
       subtitle = (CFG.rankingNotes && CFG.rankingNotes[cn]) || ('Après la manche ' + cn);
       btn = h('button', { class: 'btn', onclick: function () { go('intro'); } }, 'Continuer', icon('arrow'));
     } else if (mode === 'finale') {
+      subtitle = 'Classement complet';
       btn = h('button', { class: 'btn orange a-up', style: 'animation-delay:' + ((n * step) + 0.8) + 's', onclick: startPodium }, 'Voir le podium', icon('arrow'));
     } else {
       btn = h('button', { class: 'btn', onclick: function () { go(prevScreen === 'ranking' ? 'question' : prevScreen); } }, 'Retour au quiz', icon('arrow'));
@@ -511,7 +511,7 @@
         var fresh = state.justRevealed === i;
         pod.appendChild(h('div', { class: 'pod p' + (i + 1) + (shown ? '' : ' hide') + (shown && !fresh ? ' noanim' : '') },
           h('span', { html: ICON.trophy(colors[i + 1]), style: 'display:flex', 'aria-hidden': 'true' }),
-          h('div', { class: 'nm', text: r.player.name }), h('div', { class: 'sc', text: pts(r.player.score) }),
+          h('div', { class: 'nm', text: r.player.name + ' — ' + pts(r.player.score) }),
           h('div', { class: 'blk', text: shown ? L.rankLabel(r.rank) : String(i + 1) })));
       });
       s.appendChild(pod);
@@ -522,7 +522,7 @@
       } else {
         var lst = h('div', { class: 'lst' });
         rows.forEach(function (r) {
-          lst.appendChild(h('div', { class: 'r' }, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name }), h('b', { text: pts(r.player.score) })));
+          lst.appendChild(h('div', { class: 'r' }, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name + ' — ' + pts(r.player.score) })));
         });
         s.appendChild(h('div', { class: 'fullrank a-up d3' }, h('h2', { text: 'Classement complet' }), lst));
       }
