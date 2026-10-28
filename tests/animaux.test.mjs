@@ -48,13 +48,13 @@ test('Animaux : dossier autonome, quiz Cathares et France intacts', () => {
   assert.ok(/obeo-quiz-animaux-v1/.test(fs.readFileSync(path.join(root, 'animaux/js/app.js'), 'utf8')), 'sauvegarde séparée des autres quiz');
 });
 
-test('Animaux : 26 images du pack présentes, vraies JPEG, toutes associées (accueil, 6 manches, 19 questions)', () => {
-  const files = [data.CONFIG.imagesDir + data.CONFIG.homeImage].concat(m.chapters.map(c => decodeURIComponent(c.image)), m.questions.filter(q => q.explicitImage).map(q => decodeURIComponent(q.image)));
-  assert.equal(files.length, 26);
-  assert.equal(new Set(files).size, 26);
+test('Animaux : 19 images de questions nettes, accueil et intros de manche en décor OBEO (visuels flous retirés)', () => {
+  const files = m.questions.filter(q => q.explicitImage).map(q => decodeURIComponent(q.image));
+  assert.equal(files.length, 19);
   files.forEach(f => { const b = fs.readFileSync(path.join(root, 'animaux', f)); assert.ok(b[0] === 0xff && b[1] === 0xd8, 'JPEG ' + f); });
-  assert.deepEqual(m.chapters.map(c => decodeURIComponent(c.image).replace('assets/images/', '')), ['manche1.jpg', 'manche2.jpg', 'manche3.jpg', 'manche4.jpg', 'manche5.jpg', 'manche6.jpg']);
-  assert.equal(data.CONFIG.homeImage, 'hero-animaux.jpg');
+  assert.equal(data.CONFIG.homeImage, '');
+  data.CHAPTERS.forEach(c => assert.equal(c.image, ''));
+  ['home.jpg', 'ch1.jpg', 'ch2.jpg', 'ch3.jpg', 'ch4.jpg', 'ch5.jpg', 'ch6.jpg'].forEach(f => assert.ok(!fs.existsSync(path.join(root, 'animaux/assets/images', f)), 'pas de ' + f + ' => décor de secours'));
 });
 test('Animaux : score maximal 42 (Q1-Q30 à 1 point, Q31-Q36 à 2 points), affiché « X / 42 »', () => {
   m.questions.forEach((q, i) => assert.equal(q.points, i >= 30 ? 2 : 1));

@@ -14,17 +14,17 @@
     rankingAfterChapters: [2, 4],
     rankingNotes: { 2: 'Après la question 12 — fin de la manche 2', 4: 'Après la question 24 — fin de la manche 4' },
     imagesDir: 'assets/images/',
-    homeImage: 'hero-animaux.jpg'
+    homeImage: ''   /* hero-animaux.jpg trop flou : décor OBEO de secours */
   };
 
   /* 6 manches de 6 questions : titre, introduction, image de fond facultative (sinon assets/images/ch1.jpg … ch6.jpg). */
   var CHAPTERS = [
-    { no: 1, title: "Tout ce que vous croyiez savoir est faux !", hook: "Certaines histoires sur les animaux sont répétées depuis notre enfance. Pourtant, beaucoup sont fausses ou très exagérées. Pour commencer notre voyage, voyons si la nature réussit déjà à nous piéger.", count: 6, image: 'manche1.jpg' },
-    { no: 2, title: "Un monde invisible pour nous", hook: "Nous percevons le monde avec nos propres yeux, nos oreilles et notre odorat. Mais d’autres animaux vivent littéralement dans une réalité différente : ultrasons, vibrations, champs magnétiques ou odeurs invisibles pour nous.", count: 6, image: 'manche2.jpg' },
-    { no: 3, title: "Plus intelligents qu’on ne le pensait", hook: "Pendant longtemps, nous avons mesuré l’intelligence animale en demandant aux animaux de résoudre des problèmes… conçus pour des humains. Aujourd’hui, on découvre des intelligences extrêmement différentes.", count: 6, image: 'manche3.jpg' },
-    { no: 4, title: "Familles et sociétés extraordinaires", hook: "Chez certains animaux, survivre est une affaire de famille. D’autres vivent dans des sociétés où l’on garde les petits, partage la nourriture, enseigne et protège les autres.", count: 6, image: 'manche4.jpg' },
-    { no: 5, title: "Les animaux médecins", hook: "Se soigner paraît être une invention humaine. Pourtant, certains animaux choisissent des plantes lorsqu’ils sont malades, nettoient les blessures de leurs compagnons et certains vont même jusqu’à pratiquer ce qui ressemble à une véritable opération chirurgicale.", count: 6, image: 'manche5.jpg' },
-    { no: 6, title: "La grande expédition finale", hook: "Vous êtes maintenant devenus les naturalistes de l’expédition OBEO. Pour cette dernière manche, il ne suffit plus de connaître une réponse : il faut utiliser ce que nous avons découvert ensemble.", count: 6, image: 'manche6.jpg' }
+    { no: 1, title: "Tout ce que vous croyiez savoir est faux !", hook: "Certaines histoires sur les animaux sont répétées depuis notre enfance. Pourtant, beaucoup sont fausses ou très exagérées. Pour commencer notre voyage, voyons si la nature réussit déjà à nous piéger.", count: 6, image: '' },
+    { no: 2, title: "Un monde invisible pour nous", hook: "Nous percevons le monde avec nos propres yeux, nos oreilles et notre odorat. Mais d’autres animaux vivent littéralement dans une réalité différente : ultrasons, vibrations, champs magnétiques ou odeurs invisibles pour nous.", count: 6, image: '' },
+    { no: 3, title: "Plus intelligents qu’on ne le pensait", hook: "Pendant longtemps, nous avons mesuré l’intelligence animale en demandant aux animaux de résoudre des problèmes… conçus pour des humains. Aujourd’hui, on découvre des intelligences extrêmement différentes.", count: 6, image: '' },
+    { no: 4, title: "Familles et sociétés extraordinaires", hook: "Chez certains animaux, survivre est une affaire de famille. D’autres vivent dans des sociétés où l’on garde les petits, partage la nourriture, enseigne et protège les autres.", count: 6, image: '' },
+    { no: 5, title: "Les animaux médecins", hook: "Se soigner paraît être une invention humaine. Pourtant, certains animaux choisissent des plantes lorsqu’ils sont malades, nettoient les blessures de leurs compagnons et certains vont même jusqu’à pratiquer ce qui ressemble à une véritable opération chirurgicale.", count: 6, image: '' },
+    { no: 6, title: "La grande expédition finale", hook: "Vous êtes maintenant devenus les naturalistes de l’expédition OBEO. Pour cette dernière manche, il ne suffit plus de connaître une réponse : il faut utiliser ce que nous avons découvert ensemble.", count: 6, image: '' }
   ];
 
   /* 36 questions dans l'ordre du jeu.

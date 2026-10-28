@@ -87,8 +87,7 @@ async function playAll(pg, group) {
     assert.ok(await pg.locator('text=Incroyables capacités, intelligence, entraide et secrets de la nature').count());
     // décor de secours : pas d'image cassée
     await pg.waitForTimeout(300);
-    assert.equal(await pg.locator('.photo.fallback').count(), 0, 'accueil : image hero affichée');
-    assert.ok(await pg.locator('.home .photo img').evaluate(i => i.complete && i.naturalWidth > 0), 'hero-animaux.jpg chargée');
+    assert.equal(await pg.locator('.photo.fallback').count(), 1, 'accueil : décor OBEO (hero flou retiré)');
     await addPlayers(pg, NAMES);
     await pg.click('text=C’est parti');
     const { seen, expect } = await playAll(pg, false);
@@ -158,7 +157,7 @@ async function playAll(pg, group) {
     pg = await newPage(browser);
     await addPlayers(pg, NAMES); await pg.click('text=C’est parti');
     const loaded = sel => pg.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 0; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
-    assert.ok(await loaded('.intro .photo img'), 'intro manche 1 : manche1.jpg');
+    assert.equal(await pg.locator('.intro .photo.fallback').count(), 1, 'intro manche 1 : décor OBEO');
     const fs2 = require('node:fs');
     for (const q of Q) {
       await pg.evaluate(i => window.__quiz.jump(i), q.n); await pg.waitForTimeout(250);
