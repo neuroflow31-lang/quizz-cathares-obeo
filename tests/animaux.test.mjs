@@ -34,9 +34,11 @@ test('Animaux : Q1 à Q24 — réponses du contenu fourni, sans texte provisoire
 test('Animaux : types et images du contenu fourni', () => {
   assert.deepEqual(m.questions.slice(0, 24).map(q => q.type).join(' '),
     'qcm tf qcm tf qcm riddle situation qcm tf qcm riddle reflection qcm situation tf qcm reflection challenge qcm situation tf visual reflection qcm');
-  const imgs = m.questions.filter(q => q.explicitImage).map(q => decodeURIComponent(q.image).replace('assets/images/', ''));
-  assert.deepEqual(imgs, ['m1q1-cameleon.png', 'm1q3-dauphin.png', 'm1q5-loup.png', 'm1q6-girafe.png', 'm2q9-cameleon-yeux.png', 'm2q11-elephant.png',
-    'm3q13-poulpe.png', 'm3q16-panda-roux.png', 'm4q19-manchots.png', 'm4q20-suricates.png', 'm4q22-suricate-sentinelle.png']);
+  const imgs = m.questions.filter(q => q.explicitImage).map(q => 'Q' + (q.n + 1) + '=' + decodeURIComponent(q.image).replace('assets/images/', ''));
+  assert.deepEqual(imgs, ['Q1=m1q1-cameleon.jpg', 'Q3=m1q3-dauphin.jpg', 'Q5=m1q5-loup.jpg', 'Q6=m1q6-girafe.jpg', 'Q9=m2q9-cameleon-yeux.jpg', 'Q11=m2q11-elephant.jpg',
+    'Q13=m3q13-poulpe.jpg', 'Q16=m3q16-panda-roux.jpg', 'Q19=m4q19-manchots.jpg', 'Q20=m4q20-suricates.jpg', 'Q22=m4q22-suricate-sentinelle.jpg',
+    'Q25=m5q25-chimpanze.jpg', 'Q26=m5q26-fourmis.jpg', 'Q27=m5q27-axolotl.jpg', 'Q28=m5q28-abeilles.jpg',
+    'Q31=m6q31-poulpe.jpg', 'Q33=m6q33-suricates.jpg', 'Q34=m6q34-elephants.jpg', 'Q35=m6q35-axolotl.jpg']);
   assert.ok(m.questions[8].think, 'Q9 vrai/faux avec image : image montrée avant les boutons');
 });
 test('Animaux : dossier autonome, quiz Cathares et France intacts', () => {
@@ -44,4 +46,18 @@ test('Animaux : dossier autonome, quiz Cathares et France intacts', () => {
   assert.ok(!/\.\.\//.test(html) && !/\.\.\//.test(fs.readFileSync(path.join(root, 'animaux/js/app.js'), 'utf8')));
   assert.equal(fs.readFileSync(path.join(root, 'animaux/js/logic.js'), 'utf8'), fs.readFileSync(path.join(root, 'js/logic.js'), 'utf8'));
   assert.ok(/obeo-quiz-animaux-v1/.test(fs.readFileSync(path.join(root, 'animaux/js/app.js'), 'utf8')), 'sauvegarde séparée des autres quiz');
+});
+
+test('Animaux : 26 images du pack présentes, vraies JPEG, toutes associées (accueil, 6 manches, 19 questions)', () => {
+  const files = [data.CONFIG.imagesDir + data.CONFIG.homeImage].concat(m.chapters.map(c => decodeURIComponent(c.image)), m.questions.filter(q => q.explicitImage).map(q => decodeURIComponent(q.image)));
+  assert.equal(files.length, 26);
+  assert.equal(new Set(files).size, 26);
+  files.forEach(f => { const b = fs.readFileSync(path.join(root, 'animaux', f)); assert.ok(b[0] === 0xff && b[1] === 0xd8, 'JPEG ' + f); });
+  assert.deepEqual(m.chapters.map(c => decodeURIComponent(c.image).replace('assets/images/', '')), ['manche1.jpg', 'manche2.jpg', 'manche3.jpg', 'manche4.jpg', 'manche5.jpg', 'manche6.jpg']);
+  assert.equal(data.CONFIG.homeImage, 'hero-animaux.jpg');
+});
+test('Animaux : score maximal 42 (Q1-Q30 à 1 point, Q31-Q36 à 2 points), affiché « X / 42 »', () => {
+  m.questions.forEach((q, i) => assert.equal(q.points, i >= 30 ? 2 : 1));
+  assert.equal(m.questions.reduce((a, q) => a + q.points, 0), 42);
+  assert.ok(/function pts\(n\) \{ return n \+ ' \/ ' \+ MAX; \}/.test(fs.readFileSync(path.join(root, 'animaux/js/app.js'), 'utf8')));
 });

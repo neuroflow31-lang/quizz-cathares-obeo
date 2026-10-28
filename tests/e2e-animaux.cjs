@@ -87,7 +87,8 @@ async function playAll(pg, group) {
     assert.ok(await pg.locator('text=Incroyables capacités, intelligence, entraide et secrets de la nature').count());
     // décor de secours : pas d'image cassée
     await pg.waitForTimeout(300);
-    assert.equal(await pg.locator('.photo.fallback').count(), 1, 'accueil : décor de secours quand l’image manque');
+    assert.equal(await pg.locator('.photo.fallback').count(), 0, 'accueil : image hero affichée');
+    assert.ok(await pg.locator('.home .photo img').evaluate(i => i.complete && i.naturalWidth > 0), 'hero-animaux.jpg chargée');
     await addPlayers(pg, NAMES);
     await pg.click('text=C’est parti');
     const { seen, expect } = await playAll(pg, false);
@@ -96,6 +97,7 @@ async function playAll(pg, group) {
     assert.deepEqual(Object.keys(seen.types).sort(), ['challenge', 'qcm', 'reflection', 'riddle', 'situation', 'tf', 'visual']);
     // classement final animé puis podium progressif 3e → 2e → 1er
     assert.ok(await pg.locator('text=CLASSEMENT FINAL').count());
+    assert.ok(await pg.locator('.rrow >> text=42 / 42').count(), 'classement final : 42 / 42');
     await pg.waitForTimeout(3500);
     const s = await st(pg);
     assert.deepEqual(s.players.slice(0, 3).map(p => p.score), expect.slice(0, 3), 'scores +1 / +2 / correction');
@@ -113,6 +115,8 @@ async function playAll(pg, group) {
     await pg.click('text=Révéler la 1re place'); await pg.waitForTimeout(300);
     assert.equal(await pg.locator('.pod:not(.hide)').count(), 3);
     assert.equal(await pg.locator('.pod.p1 .nm').innerText(), 'Marie');
+    assert.equal(await pg.locator('.pod.p1 .sc').innerText(), '42 / 42', 'podium : score sur 42');
+    assert.ok(await pg.locator('.fullrank >> text=42 / 42').count(), 'classement complet : 42 / 42');
     assert.ok(await pg.locator('text=Merci pour votre participation').count() && await pg.locator('text=Classement complet').count());
     await pg.click('text=Rejouer'); await pg.waitForTimeout(200);
     const s2 = await st(pg); assert.equal(s2.players.length, 4); assert.ok(s2.players.every(p => p.score === 0));
@@ -151,18 +155,26 @@ async function playAll(pg, group) {
     }
     await pg.close();
 
-    /* ---- 5) images : vraie image affichée quand le fichier existe ---- */
-    fs.mkdirSync(imgDir, { recursive: true });
-    const files = ['m1q1-cameleon.png', 'ch2.jpg', 'home.jpg'].map(f => path.join(imgDir, f)); files.forEach(f => fs.writeFileSync(f, TINY_JPG));
-    try {
-      pg = await newPage(browser); await pg.waitForTimeout(300);
-      assert.equal(await pg.locator('.photo.fallback').count(), 0, 'accueil : image trouvée (home.jpg)');
-      await addPlayers(pg, NAMES); await pg.click('text=C’est parti'); await pg.click('.intro .btn');
-      await pg.evaluate(() => window.__quiz.jump(0)); await pg.waitForTimeout(200);
-      assert.equal(await pg.locator('.qside .photo.fallback').count(), 0, 'question 1 : m1q1-cameleon.png utilisée');
-      const alt = await pg.locator('.qside .photo img').getAttribute('alt'); assert.ok(!/cam[ée]l[ée]on/i.test(alt), 'alt générique (aucune réponse dans l’alt)');
-      await pg.close();
-    } finally { files.forEach(f => { try { fs.unlinkSync(f); } catch (e) {} }); }
+    /* ---- 5) images réelles (intros de manche, questions) + décor de secours si absente ---- */
+    pg = await newPage(browser);
+    await addPlayers(pg, NAMES); await pg.click('text=C’est parti');
+    const loaded = sel => pg.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 0; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
+    assert.ok(await loaded('.intro .photo img'), 'intro manche 1 : manche1.jpg');
+    const fs2 = require('node:fs');
+    for (const q of Q) {
+      await pg.evaluate(i => window.__quiz.jump(i), q.n); await pg.waitForTimeout(250);
+      const sel = q.think ? '.lookphoto' : '.qside .photo';
+      if (!(await pg.locator(sel).count())) continue; // vrai/faux sans image : pas d'emplacement
+      const file = path.join(imgDir, decodeURIComponent(q.image).replace(/^assets\/images\//, ''));
+      const exists = fs2.existsSync(file);
+      if (exists) assert.ok(await loaded(sel + ' img'), 'image chargée : ' + q.id);
+      else assert.equal(await pg.locator(sel + '.fallback').count(), 1, 'décor de secours : ' + q.id);
+      if (exists) { const alt = await pg.locator(sel + ' img').getAttribute('alt'); assert.ok(/^Illustration/.test(alt), 'alt générique ' + q.id); }
+    }
+    for (const n of [24, 25, 26, 27]) { await pg.evaluate(i => window.__quiz.jump(i), n); await pg.waitForTimeout(250); assert.ok(await loaded('.qside .photo img'), 'Q' + (n + 1) + ' : chimpanzé / fourmis / axolotl / abeilles'); }
+    await pg.evaluate(() => window.__quiz.jump(28)); await pg.waitForTimeout(250);
+    assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'Q29 sans image : décor OBEO');
+    await pg.close();
 
     /* ---- 6) MODE TEST ANIMATEUR ---- */
     pg = await newPage(browser);
@@ -191,7 +203,10 @@ async function playAll(pg, group) {
     // podium direct (scores d'essai générés automatiquement)
     await pg.click('text=Podium (progressif)'); await pg.waitForTimeout(200); assert.ok(await vis(pg, '.podium'));
     await pg.click('#tb-next', { trial: true }).catch(() => {});
-    await pg.click('#tb-menu'); await pg.click('text=Classement intermédiaire'); await pg.waitForTimeout(150); assert.ok(await pg.locator('.rsub').count());
+    await pg.click('#tb-menu'); await pg.click('text=Classement Q12'); await pg.waitForTimeout(150); assert.match(await pg.locator('.rsub').innerText(), /question 12/i);
+    await pg.click('#tb-menu'); await pg.click('text=Classement Q24'); await pg.waitForTimeout(150); assert.match(await pg.locator('.rsub').innerText(), /question 24/i);
+    await pg.click('#tb-menu'); await pg.click('.tmrow .btn >> text=Finale'); await pg.waitForTimeout(150); assert.match(await pg.locator('.chnum').innerText(), /MANCHE 6/);
+    await pg.click('#tb-menu'); await pg.click('.tmrow .btn >> text=Accueil'); await pg.waitForTimeout(150); assert.equal((await st(pg)).screen, 'home');
     await pg.click('#tb-menu');
     // rien n'a été sauvegardé en mode test
     assert.equal(await pg.evaluate(() => localStorage.getItem('obeo-quiz-animaux-v1')), before, 'mode test non sauvegardé');
@@ -202,5 +217,5 @@ async function playAll(pg, group) {
 
     console.log(JSON.stringify(report));
     console.log('E2E ANIMAUX OK');
-  } finally { await browser.close(); ['m1q1-cameleon.png', 'ch2.jpg', 'home.jpg'].forEach(f => { try { fs.unlinkSync(path.join(imgDir, f)); } catch (e) {} }); }
+  } finally { await browser.close(); }
 })().catch(e => { console.error('E2E ANIMAUX ÉCHEC:', e.message); process.exit(1); });

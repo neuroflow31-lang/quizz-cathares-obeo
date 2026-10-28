@@ -131,7 +131,9 @@
   function bonusTag(q) { return q.points > 1 ? h('div', { class: 'bonus a-zoom', text: '★ QUESTION BONUS — ' + q.points + ' POINTS' }) : null; }
   function kicker(q) { return q.typeLabel ? h('div', { class: 'kicker', text: q.typeLabel }) : null; }
   function indivMode() { return state.mode === 'individual' && state.players.length > 0; }
-  function pts(n) { return n + ' pt' + (n > 1 ? 's' : ''); }
+  // Score toujours affiché sur le maximum possible (somme des points des 36 questions = 42)
+  var MAX = Q.reduce(function (a, q) { return a + q.points; }, 0);
+  function pts(n) { return n + ' / ' + MAX; }
 
   /* ---------- accueil ---------- */
   function home() {
@@ -402,7 +404,7 @@
         plus.textContent = d > 0 ? '✓ +' + d : d < 0 ? '−' + (-d) : '+' + step;
         chip.classList.toggle('got', d > 0);
         var cur = state.players.filter(function (x) { return x.id === p.id; })[0];
-        if (sc) sc.textContent = pts(cur.score);
+        if (sc) sc.textContent = 'Score : ' + pts(cur.score);
       }
       plus.addEventListener('click', function () { change(p.id, +step); paint(); });
       minus.addEventListener('click', function () { change(p.id, -step); paint(); });
@@ -602,7 +604,7 @@
   function randomScores() {
     state.players = state.players.map(function (p) { return Object.assign({}, p, { score: Math.floor(Math.random() * 28) }); });
   }
-  function testRanking(mode) { prevScreen = 'testmenu'; state.rankMode = mode; state.rankChapter = 3; go('ranking'); }
+  function testRanking(mode, ch) { prevScreen = 'testmenu'; state.rankMode = mode; state.rankChapter = ch || CFG.rankingAfterChapters[0]; go('ranking'); }
   function testPodium() {
     if (!state.players.some(function (p) { return p.score > 0; })) randomScores();
     state.mode = 'individual'; state.podiumStep = 0; state.justRevealed = -1; go('final');
@@ -653,7 +655,10 @@
     });
     s.appendChild(h('h3', { text: 'Classements et podium' }));
     s.appendChild(h('div', { class: 'tmrow' },
-      h('button', { class: 'btn small', onclick: function () { testRanking('between'); } }, 'Classement intermédiaire'),
+      h('button', { class: 'btn small', onclick: function () { go('home'); } }, 'Accueil'),
+      h('button', { class: 'btn small', onclick: function () { testRanking('between', 2); } }, 'Classement Q12'),
+      h('button', { class: 'btn small', onclick: function () { testRanking('between', 4); } }, 'Classement Q24'),
+      h('button', { class: 'btn small', onclick: function () { toIntro(CH.length - 1); } }, 'Finale'),
       h('button', { class: 'btn small', onclick: function () { testRanking('finale'); } }, 'Classement final animé'),
       h('button', { class: 'btn orange small', onclick: testPodium }, 'Podium (progressif)'),
       h('button', { class: 'btn outline small', onclick: function () { randomScores(); testMenu(); } }, 'Scores d’essai aléatoires'),

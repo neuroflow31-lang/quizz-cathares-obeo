@@ -12,19 +12,19 @@
     venue: 'OBEO Toulouse Guillaumet',
     /* classements intermédiaires : après ces manches */
     rankingAfterChapters: [2, 4],
-    rankingNotes: { 2: 'Après la manche 2', 4: 'Après la manche 4' },
+    rankingNotes: { 2: 'Après la question 12 — fin de la manche 2', 4: 'Après la question 24 — fin de la manche 4' },
     imagesDir: 'assets/images/',
-    homeImage: ''
+    homeImage: 'hero-animaux.jpg'
   };
 
   /* 6 manches de 6 questions : titre, introduction, image de fond facultative (sinon assets/images/ch1.jpg … ch6.jpg). */
   var CHAPTERS = [
-    { no: 1, title: "Tout ce que vous croyiez savoir est faux !", hook: "Certaines histoires sur les animaux sont répétées depuis notre enfance. Pourtant, beaucoup sont fausses ou très exagérées. Pour commencer notre voyage, voyons si la nature réussit déjà à nous piéger.", count: 6, image: '' },
-    { no: 2, title: "Un monde invisible pour nous", hook: "Nous percevons le monde avec nos propres yeux, nos oreilles et notre odorat. Mais d’autres animaux vivent littéralement dans une réalité différente : ultrasons, vibrations, champs magnétiques ou odeurs invisibles pour nous.", count: 6, image: '' },
-    { no: 3, title: "Plus intelligents qu’on ne le pensait", hook: "Pendant longtemps, nous avons mesuré l’intelligence animale en demandant aux animaux de résoudre des problèmes… conçus pour des humains. Aujourd’hui, on découvre des intelligences extrêmement différentes.", count: 6, image: '' },
-    { no: 4, title: "Familles et sociétés extraordinaires", hook: "Chez certains animaux, survivre est une affaire de famille. D’autres vivent dans des sociétés où l’on garde les petits, partage la nourriture, enseigne et protège les autres.", count: 6, image: '' },
-    { no: 5, title: "Les animaux médecins", hook: "[Introduction de la manche 5 — texte reçu incomplet (« Se soigner paraît être une invention humaine. Pourtant, certains… »), à compléter]", count: 6, image: '' },
-    { no: 6, title: "La grande expédition finale", hook: "[Introduction de la manche 6 — non fournie, à compléter]", count: 6, image: '' }
+    { no: 1, title: "Tout ce que vous croyiez savoir est faux !", hook: "Certaines histoires sur les animaux sont répétées depuis notre enfance. Pourtant, beaucoup sont fausses ou très exagérées. Pour commencer notre voyage, voyons si la nature réussit déjà à nous piéger.", count: 6, image: 'manche1.jpg' },
+    { no: 2, title: "Un monde invisible pour nous", hook: "Nous percevons le monde avec nos propres yeux, nos oreilles et notre odorat. Mais d’autres animaux vivent littéralement dans une réalité différente : ultrasons, vibrations, champs magnétiques ou odeurs invisibles pour nous.", count: 6, image: 'manche2.jpg' },
+    { no: 3, title: "Plus intelligents qu’on ne le pensait", hook: "Pendant longtemps, nous avons mesuré l’intelligence animale en demandant aux animaux de résoudre des problèmes… conçus pour des humains. Aujourd’hui, on découvre des intelligences extrêmement différentes.", count: 6, image: 'manche3.jpg' },
+    { no: 4, title: "Familles et sociétés extraordinaires", hook: "Chez certains animaux, survivre est une affaire de famille. D’autres vivent dans des sociétés où l’on garde les petits, partage la nourriture, enseigne et protège les autres.", count: 6, image: 'manche4.jpg' },
+    { no: 5, title: "Les animaux médecins", hook: "[Introduction de la manche 5 — texte reçu incomplet (« Se soigner paraît être une invention humaine. Pourtant, certains… »), à compléter]", count: 6, image: 'manche5.jpg' },
+    { no: 6, title: "La grande expédition finale", hook: "[Introduction de la manche 6 — non fournie, à compléter]", count: 6, image: 'manche6.jpg' }
   ];
 
   /* 36 questions dans l'ordre du jeu.
@@ -42,7 +42,7 @@
       explanation: "Le camouflage existe, mais le changement de couleur sert aussi énormément à la communication, à la température, à la lumière et à l’état physiologique de l’animal.",
       anecdote: "Les yeux du caméléon peuvent bouger en grande partie indépendamment l’un de l’autre.",
       points: 1,
-      image: "m1q1-cameleon.png",
+      image: "m1q1-cameleon.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -69,7 +69,7 @@
       explanation: "Le dauphin respire de l’air avec des poumons, met au monde des petits et les allaite.",
       anecdote: "Il doit régulièrement revenir à la surface pour respirer.",
       points: 1,
-      image: "m1q3-dauphin.png",
+      image: "m1q3-dauphin.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -96,7 +96,7 @@
       explanation: "Dans de nombreuses populations, une meute est essentiellement un groupe familial composé des parents et de leurs descendants.",
       anecdote: "L’image du « loup alpha » combattant constamment pour dominer tous les autres vient notamment d’observations anciennes de loups captifs et simplifie énormément la vie familiale des loups sauvages.",
       points: 1,
-      image: "m1q5-loup.png",
+      image: "m1q5-loup.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -110,7 +110,7 @@
       explanation: "Comme l’être humain et la plupart des mammifères, la girafe possède seulement sept vertèbres cervicales.",
       anecdote: "La différence est spectaculaire parce que chacune de ses vertèbres cervicales est extrêmement allongée.",
       points: 1,
-      image: "m1q6-girafe.png",
+      image: "m1q6-girafe.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -151,7 +151,7 @@
       explanation: "Ses yeux peuvent se déplacer de manière largement indépendante lorsqu’il explore son environnement.",
       anecdote: "Lorsqu’il prépare une attaque, il peut ensuite coordonner ses deux yeux vers la même cible.",
       points: 1,
-      image: "m2q9-cameleon-yeux.png",
+      image: "m2q9-cameleon-yeux.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -179,7 +179,7 @@
       explanation: "Les éléphants produisent notamment des vocalisations très basses fréquences pouvant se propager loin.",
       anecdote: "Une partie du monde sonore des éléphants se situe donc à la limite ou sous notre propre perception.",
       points: 1,
-      image: "m2q11-elephant.png",
+      image: "m2q11-elephant.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -207,7 +207,7 @@
       explanation: "Les poulpes montrent des capacités d’apprentissage et de résolution de problèmes remarquables pour des invertébrés.",
       anecdote: "Leur système nerveux est très différent du nôtre et une part considérable de leurs neurones se trouve dans leurs bras.",
       points: 1,
-      image: "m3q13-poulpe.png",
+      image: "m3q13-poulpe.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -248,7 +248,7 @@
       explanation: "Il s’agit d’un os du poignet modifié qui fonctionne comme un pseudo-pouce.",
       anecdote: "Le panda géant possède lui aussi un pseudo-pouce, malgré leur éloignement évolutif.",
       points: 1,
-      image: "m3q16-panda-roux.png",
+      image: "m3q16-panda-roux.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -290,7 +290,7 @@
       explanation: "Après avoir pondu, la femelle part se nourrir tandis que le mâle conserve l’œuf protégé du sol glacé.",
       anecdote: "Les mâles se regroupent et se déplacent au sein du groupe pour réduire les pertes de chaleur.",
       points: 1,
-      image: "m4q19-manchots.png",
+      image: "m4q19-manchots.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -304,7 +304,7 @@
       explanation: "Des adultes ont été observés fournissant d’abord des proies mortes ou neutralisées, puis des proies de plus en plus difficiles à manipuler.",
       anecdote: "C’est l’un des exemples classiques utilisés par les chercheurs lorsqu’ils étudient l’enseignement chez les animaux.",
       points: 1,
-      image: "m4q20-suricates.png",
+      image: "m4q20-suricates.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -331,7 +331,7 @@
       explanation: "Certains membres montent la garde et peuvent donner des cris d’alarme lorsqu’un danger apparaît.",
       anecdote: "La coopération permet aux autres de consacrer davantage de temps à chercher leur nourriture.",
       points: 1,
-      image: "m4q22-suricate-sentinelle.png",
+      image: "m4q22-suricate-sentinelle.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -363,7 +363,7 @@
       imageFit: '',
       credit: '',
       source: '' },
-    // Q25 — QCM
+    // Q25 — QCM — image : assets/images/m5q25-chimpanze.jpg
     { id: 'm5q25',
       chapter: 5,
       type: 'qcm',
@@ -373,11 +373,11 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 1,
-      image: "",
+      image: "m5q25-chimpanze.jpg",
       imageFit: '',
       credit: '',
       source: '' },
-    // Q26 — QCM
+    // Q26 — QCM — image : assets/images/m5q26-fourmis.jpg
     { id: 'm5q26',
       chapter: 5,
       type: 'qcm',
@@ -387,11 +387,11 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 1,
-      image: "",
+      image: "m5q26-fourmis.jpg",
       imageFit: '',
       credit: '',
       source: '' },
-    // Q27 — QCM
+    // Q27 — QCM — image : assets/images/m5q27-axolotl.jpg
     { id: 'm5q27',
       chapter: 5,
       type: 'qcm',
@@ -401,11 +401,11 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 1,
-      image: "",
+      image: "m5q27-axolotl.jpg",
       imageFit: '',
       credit: '',
       source: '' },
-    // Q28 — QCM
+    // Q28 — QCM — image : assets/images/m5q28-abeilles.jpg
     { id: 'm5q28',
       chapter: 5,
       type: 'qcm',
@@ -415,7 +415,7 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 1,
-      image: "",
+      image: "m5q28-abeilles.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -447,7 +447,7 @@
       imageFit: '',
       credit: '',
       source: '' },
-    // Q31 — QCM
+    // Q31 — QCM — image : assets/images/m6q31-poulpe.jpg
     { id: 'm6q31',
       chapter: 6,
       type: 'qcm',
@@ -457,7 +457,7 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 2,
-      image: "",
+      image: "m6q31-poulpe.jpg",
       imageFit: '',
       credit: '',
       source: '' },
@@ -475,7 +475,7 @@
       imageFit: '',
       credit: '',
       source: '' },
-    // Q33 — QCM
+    // Q33 — QCM — image : assets/images/m6q33-suricates.jpg
     { id: 'm6q33',
       chapter: 6,
       type: 'qcm',
@@ -485,11 +485,11 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 2,
-      image: "",
+      image: "m6q33-suricates.jpg",
       imageFit: '',
       credit: '',
       source: '' },
-    // Q34 — QCM
+    // Q34 — QCM — image : assets/images/m6q34-elephants.jpg
     { id: 'm6q34',
       chapter: 6,
       type: 'qcm',
@@ -499,11 +499,11 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 2,
-      image: "",
+      image: "m6q34-elephants.jpg",
       imageFit: '',
       credit: '',
       source: '' },
-    // Q35 — QCM
+    // Q35 — QCM — image : assets/images/m6q35-axolotl.jpg
     { id: 'm6q35',
       chapter: 6,
       type: 'qcm',
@@ -513,7 +513,7 @@
       explanation: "[Pourquoi ? — à remplacer]",
       anecdote: "",
       points: 2,
-      image: "",
+      image: "m6q35-axolotl.jpg",
       imageFit: '',
       credit: '',
       source: '' },
