@@ -6,10 +6,12 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs . 5173",
-    "test": "node --test tests/logic.test.mjs tests/france.test.mjs tests/animaux.test.mjs",
+    "test": "node --test tests/logic.test.mjs tests/france.test.mjs tests/animaux.test.mjs tests/expressions.test.mjs",
     "build": "node scripts/build.mjs",
     "check:france": "node scripts/check-france.mjs",
     "check:animaux": "node scripts/check-animaux.mjs",
+    "check:expressions": "node scripts/check-expressions.mjs",
+    "build:expressions-autonome": "node scripts/build-expressions-autonome.mjs",
     "preview": "node scripts/serve.mjs dist 4173"
   }
 }

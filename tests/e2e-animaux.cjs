@@ -157,6 +157,7 @@ async function playAll(pg, group) {
     pg = await newPage(browser);
     await addPlayers(pg, NAMES); await pg.click('text=C’est parti');
     const loaded = sel => pg.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 0; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
+    await pg.waitForSelector('.intro .photo.fallback', { timeout: 3000 }).catch(() => {}); // l'image ch1.jpg absente bascule en décor de secours (asynchrone)
     assert.equal(await pg.locator('.intro .photo.fallback').count(), 1, 'intro manche 1 : décor OBEO');
     const fs2 = require('node:fs');
     for (const q of Q) {

@@ -36,4 +36,12 @@ if (an.questions.length !== 36) fail('Animaux : 36 questions attendues');
 if (errors) process.exit(1);
 fs.cpSync(path.join(root, 'animaux'), path.join(dist, 'animaux'), { recursive: true });
 console.log(`✓ Animaux : ${an.questions.length} questions, ${an.chapters.length} manches${an.placeholders ? ' (' + an.placeholders + ' à remplacer)' : ''} — copié dans dist/animaux/`);
+// Quiz « Expressions françaises » (dossier autonome)
+const ex = require(path.join(root, 'expressions/js/model.js')).build(require(path.join(root, 'expressions/js/quiz-data.js')));
+ex.errors.forEach((e) => fail('Expressions : ' + e));
+if (ex.questions.length !== 36) fail('Expressions : 36 questions attendues');
+if (ex.questions.reduce((s, q) => s + q.points, 0) !== 42) fail('Expressions : score maximal 42 attendu');
+if (errors) process.exit(1);
+fs.cpSync(path.join(root, 'expressions'), path.join(dist, 'expressions'), { recursive: true });
+console.log(`✓ Expressions : ${ex.questions.length} questions, ${ex.chapters.length} manches${ex.placeholders ? ' (' + ex.placeholders + ' à remplacer)' : ''} — copié dans dist/expressions/`);
 console.log(`✓ Données valides (${QUESTIONS.length} épreuves, manches ${per.join('+')}) — application copiée dans dist/`);
