@@ -469,3 +469,9 @@ button, input { font-family: inherit; }
 /* titre final long */
 .rank.finale h1 { font-size: 60px; line-height: 1.1; }
 .final h1.fintitle { font-size: 64px; line-height: 1.1; }
+/* V2 : score final sur 42 bien visible (page finale animée) */
+.final .subt.score { color: var(--orange-dark); font-weight: 800; letter-spacing: .04em; }
+.pod .nm { margin-bottom: 2px; }
+.pod .sc { font-size: 34px; font-weight: 800; color: var(--green-dark); margin-bottom: 12px; }
+.zvoyage { border-left-color: var(--green); background: #EEF6F4; }
+.zvoyage h2 { color: var(--green-dark); }

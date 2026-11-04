@@ -35,8 +35,8 @@ test('Expressions : 36 expressions différentes, la finale n’en réutilise auc
   assert.ok(!/coupe (sombre|claire)|charybde|scylla|breche|pourpoint|petit feu|haut vol/.test(early), 'aucune expression de la finale avant Q31');
 });
 test('Expressions : bonnes réponses du contenu fourni', () => {
-  assert.equal(m.questions.map(q => 'ABC'[q.correct]).join(''), 'CABCABCABCABBCABCABACBCAABCBBCABCACB');
-  assert.equal(m.questions[0].answers[m.questions[0].correct], 'Rester à regarder en l’air en perdant son temps');
+  assert.equal(m.questions.map(q => 'ABC'[q.correct]).join(''), 'BABCBBAABAABBCABCACAABBBABAAACABCACB');
+  assert.equal(m.questions[0].answers[m.questions[0].correct], 'Rester la bouche ouverte à regarder longtemps');
   assert.equal(m.questions[35].answers[m.questions[35].correct], 'Une muraille');
 });
 test('Expressions : barème 30 × 1 point + 6 × 2 points = 42 ; classements après Q12 et Q24', () => {
@@ -47,7 +47,7 @@ test('Expressions : barème 30 × 1 point + 6 × 2 points = 42 ; classements apr
   assert.equal(data.CONFIG.finaleTitle, 'VOYAGE TERMINÉ AU CŒUR DES EXPRESSIONS FRANÇAISES !');
 });
 test('Expressions : origines incertaines signalées comme telles', () => {
-  ['m1q6', 'm2q10', 'm4q19', 'm4q20', 'm4q21', 'm4q23', 'm5q27', 'm5q29'].forEach(id => {
+  ['m1q6', 'm4q19', 'm4q23'].forEach(id => {
     const q = m.questions.find(x => x.id === id);
     assert.match(q.blocks.map(b => b.text).join(' '), /incertaine|discutée/, id);
   });
@@ -57,7 +57,9 @@ test('Expressions : 10 images du pack placées, une image pour chacune des 36 qu
   assert.deepEqual(m.chapters.map(c => c.image), [1, 2, 3, 4, 5, 6].map(n => 'assets/images/manche' + n + '.jpg'));
   m.questions.forEach(q => assert.ok(q.image && fs.existsSync(path.join(root, 'expressions', decodeURIComponent(q.image))), 'image ' + q.id));
   const f = q => decodeURIComponent(q).replace('assets/images/', '');
-  assert.deepEqual(m.questions.filter(q => q.revealImage).map(q => 'Q' + (q.n + 1) + '=' + f(q.revealImage)), ['Q2=q02-marmot.jpg', 'Q3=q03-fauconnerie.jpg', 'Q7=q07-maille.jpg']);
+  assert.deepEqual(m.questions.filter(q => q.revealImage).map(q => 'Q' + (q.n + 1) + '=' + f(q.revealImage)), ['Q2=q02-marmot.jpg', 'Q3=q03-fauconnerie.jpg', 'Q7=q07-maille.jpg', 'Q21=q21-chou-blanc.jpg', 'Q24=q24-carte-blanche.jpg']);
+  assert.deepEqual([10, 12, 20, 27, 29, 32].map(n => f(m.questions[n - 1].image)), ['q10-lune-de-miel.jpg', 'q12-tasse-de-the.jpg', 'q20-cest-la-vie.jpg', 'q27-faux-pas.jpg', 'q29-tete-a-tete.jpg', 'q32-feu-vert.jpg']);
+  assert.ok(!/q21|q24/.test(f(m.questions[20].image) + f(m.questions[23].image)), 'Q21/Q24 : images-réponses seulement après validation');
   // images qui donneraient un indice : jamais affichées avec la question concernée
   assert.equal(f(m.questions[1].image), 'hero-expressions.jpg', 'Q2 : pas le sablier de manche1, pas l’homme qui attend');
   assert.equal(f(m.questions[6].image), 'manche2.jpg', 'Q7 : pas la dispute');
@@ -80,7 +82,21 @@ test('Expressions : corrections éditoriales (intro manche 3, Q8, Q3 sans spoile
   const t3 = norm([q3.q, q3.short].concat(q3.answers, q3.blocks.map(b => b.text)).join(' '));
   assert.ok(!/haut vol|faucon /.test(t3), 'Q3 ne cite pas « de haut vol »');
   assert.equal(q3.blocks.find(b => b.key === 'savez').text, 'La fauconnerie a laissé dans la langue française plusieurs mots et expressions que nous utilisons encore sans toujours connaître leur origine.');
-  assert.match(q8.blocks.find(b => b.key === 'origine').text, /^Une tradition ancienne relie cette expression aux jongleurs/);
+  assert.match(q8.blocks.find(b => b.key === 'origine').text, /^Une tradition médiévale documentée associe l’expression aux jongleurs/);
   assert.match(q8.blocks.find(b => b.key === 'savez').text, /^Le Dictionnaire de l’Académie française a longtemps défini/);
   assert.equal(q34.answers[q34.correct], 'La fauconnerie');
+});
+test('Expressions V2 : questions d’histoire des mots et expressions qui voyagent', () => {
+  const q = n => m.questions[n - 1], txt = n => q(n).blocks.map(b => b.text).join(' ');
+  assert.deepEqual(m.questions.filter(x => x.blocks.some(b => b.key === 'voyage')).map(x => x.n + 1), [10, 12, 20, 24, 27, 29]);
+  assert.deepEqual([10, 12, 20, 24, 27, 29].map(n => q(n).expression), ['Lune de miel', 'Ce n’est pas ma tasse de thé', 'C’est la vie', 'Carte blanche', 'Faux pas', 'Tête-à-tête']);
+  assert.match(q(1).q, /que signifiait autrefois le verbe « bayer »/);
+  assert.match(q(5).q, /ancien verbe/); assert.match(q(7).q, /qu’était une « maille »/); assert.match(q(9).q, /qu’était à l’origine le « chapitre »/);
+  assert.match(q(21).q, /Dans quel jeu ancien/); assert.match(q(28).q, /le mot « bombance » évoquait/);
+  assert.match(txt(32), /feu vert.*green light/); assert.match(txt(29), /raison d’être/);
+  assert.equal(q(24).kicker, 'Une expression qui voyage', 'Q24 : l’étiquette ne donne pas la réponse');
+  [13, 14, 16, 17, 18, 22, 25, 26, 30, 31, 33, 34, 35, 36].forEach(n => assert.ok(q(n).q.length > 10, 'conservée Q' + n));
+  assert.match(q(35).q, /laquelle enlève le plus d’arbres/);
+  // jamais une question de simple définition pour les expressions très connues remplacées
+  [1, 2, 5, 6, 7, 8, 9, 19, 21, 23, 28].forEach(n => assert.ok(!/^(Que signifie|Aujourd’hui|Quel est le sens)/.test(q(n).q), 'Q' + n));
 });

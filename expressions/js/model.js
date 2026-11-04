@@ -58,11 +58,12 @@
         else if (new Set(answers).size !== 3) errors.push(id + ' : choix en double');
       } else answers = spec.labels.slice();
       var correct = parseAnswer(r, spec, errors, id);
-      // blocs de révélation : ✅ Réponse · 💬 Ce que ça veut dire · 🕰️ D'où ça vient · ✨ Le saviez-vous ? · 🗣️ Et vous ?
+      // blocs de révélation : ✅ Réponse · 💬 Ce que ça veut dire · 🕰️ D'où ça vient · 🌍 Une expression qui voyage · ✨ Le saviez-vous ? · 🗣️ Et vous ?
       var txt = function (k) { return String(r[k] || '').trim(); };
       var blocks = [];
       if (txt('sens')) blocks.push({ key: 'sens', title: '💬 ' + (txt('sensLabel') || 'Ce que ça veut dire'), text: txt('sens') });
       if (txt('origine')) blocks.push({ key: 'origine', title: '🕰️ D’où ça vient', text: txt('origine') });
+      if (txt('voyage')) blocks.push({ key: 'voyage', title: '🌍 Une expression qui voyage', text: txt('voyage') });
       if (txt('savez')) blocks.push({ key: 'savez', title: '✨ Le saviez-vous ?', text: txt('savez') });
       if (txt('etvous')) blocks.push({ key: 'etvous', title: '🗣️ Et vous ?', text: txt('etvous') });
       var ph = isPlaceholder(r.question) || (spec.kind === 'abc' && answers.some(isPlaceholder)) || isPlaceholder(r.short) || blocks.some(function (b) { return isPlaceholder(b.text); });
@@ -72,7 +73,7 @@
       questions.push({ id: id, n: questions.length, ch: ci, chapterNo: chapters[ci].no, type: r.type, kind: spec.kind,
         typeLabel: spec.label, think: r.think != null ? !!r.think : (spec.think || (spec.kind === 'two' && !!r.image)),
         q: String(r.question || ''), clues: (r.clues || []).slice(), answers: answers, correct: correct,
-        expression: txt('expression'), blocks: blocks, short: txt('short'), points: r.points || 1,
+        expression: txt('expression'), kicker: txt('kicker'), blocks: blocks, short: txt('short'), points: r.points || 1,
         image: r.image ? enc(dir + r.image) : '', explicitImage: !!r.image, revealImage: r.revealImage ? enc(dir + r.revealImage) : '', fit: r.imageFit === 'contain' ? 'contain' : 'cover',
         credit: r.credit || '', source: r.source || '', placeholder: ph });
     });

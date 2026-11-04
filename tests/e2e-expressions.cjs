@@ -42,7 +42,7 @@ async function playAll(pg, group) {
       await pg.click('.intro .btn'); await pg.waitForTimeout(100);
     }
     assert.equal((await st(pg)).idx, n);
-    assert.equal(await pg.locator('.kicker').innerText(), q.expression);
+    assert.equal(await pg.locator('.kicker').innerText(), q.kicker || q.expression);
     if (q.points > 1) { seen.bonus++; assert.ok(await vis(pg, '.bonus'), 'badge 2 points ' + q.id); }
     // aucune réponse ni explication visible avant validation
     assert.equal(await pg.locator('.answer.good, .answer.bad, .zone').count(), 0, 'rien de révélé ' + q.id);
@@ -99,7 +99,7 @@ async function playAll(pg, group) {
     report.indiv = seen;
     assert.equal(seen.intros, 6); assert.equal(seen.between, 2); assert.equal(seen.bonus, 6);
     assert.ok(await pg.locator('text=VOYAGE TERMINÉ AU CŒUR DES EXPRESSIONS FRANÇAISES !').count(), 'titre final');
-    assert.ok(await pg.locator('text=Classement complet').count());
+    assert.ok(await pg.locator('text=Classement complet — score final sur 42 points').count());
     await pg.waitForTimeout(3500);
     assert.deepEqual(await pg.locator('.rrow .nm').allInnerTexts(), ['Marie — 42 / 42', 'Jean — ' + expect[1] + ' / 42', 'Monique — ' + expect[2] + ' / 42', 'Pierre — 0 / 42']);
     const s = await st(pg);
@@ -113,9 +113,10 @@ async function playAll(pg, group) {
     assert.equal(await pg.locator('.pod.p2:not(.hide)').count(), 1); assert.equal(await pg.locator('.pod.p1:not(.hide)').count(), 0);
     await pg.click('text=Révéler la 1re place'); await pg.waitForTimeout(300);
     assert.equal(await pg.locator('.pod:not(.hide)').count(), 3);
-    assert.equal(await pg.locator('.pod.p1 .nm').innerText(), 'Marie — 42 / 42');
-    assert.equal(await pg.locator('.pod.p2 .nm').innerText(), 'Jean — ' + expect[1] + ' / 42');
-    assert.equal(await pg.locator('.pod.p3 .nm').innerText(), 'Monique — ' + expect[2] + ' / 42');
+    assert.equal(await pg.locator('.pod.p1 .nm').innerText(), '🥇 Marie'); assert.equal(await pg.locator('.pod.p1 .sc').innerText(), '42 / 42 points');
+    assert.equal(await pg.locator('.pod.p2 .nm').innerText(), '🥈 Jean'); assert.equal(await pg.locator('.pod.p2 .sc').innerText(), expect[1] + ' / 42 points');
+    assert.equal(await pg.locator('.pod.p3 .nm').innerText(), '🥉 Monique'); assert.equal(await pg.locator('.pod.p3 .sc').innerText(), expect[2] + ' / 42 points');
+    assert.equal(await pg.locator('.final .subt').innerText(), 'SCORE FINAL — SUR 42 POINTS');
     assert.ok(await pg.locator('.fullrank >> text=Marie — 42 / 42').count());
     // correction : jamais sous zéro ; reprise après rechargement
     await pg.click('text=Rejouer'); await pg.click('text=C’est parti'); await pg.click('.intro .btn');
@@ -170,7 +171,7 @@ async function playAll(pg, group) {
     assert.ok(await pg.locator('text=VOYAGE TERMINÉ AU CŒUR DES EXPRESSIONS FRANÇAISES !').count());
     await pg.click('#tb-menu'); await pg.click('text=Podium (progressif)'); await pg.waitForTimeout(200);
     for (let k = 0; k < 3; k++) await pg.click('.podstep .btn');
-    assert.equal(await pg.locator('.pod:not(.hide)').count(), 3); assert.match(await pg.locator('.pod.p1 .nm').innerText(), / — \d+ \/ 42$/);
+    assert.equal(await pg.locator('.pod:not(.hide)').count(), 3); assert.match(await pg.locator('.pod.p1 .sc').innerText(), /^\d+ \/ 42 points$/);
     await pg.click('#tb-menu'); await pg.click('.tmrow .btn >> text=Accueil'); await pg.waitForTimeout(150); assert.equal((await st(pg)).screen, 'home');
     assert.equal(await pg.evaluate(k => localStorage.getItem(k), KEY), before, 'mode test non sauvegardé');
     await pg.click('#tb-menu'); await pg.click('#tb-exit'); await pg.waitForTimeout(150);

@@ -129,7 +129,7 @@
   function pos(i) { var c = chapterOf(i); return { ch: c, n: i - c.start, last: i === c.start + c.count - 1 }; }
   var BOUNDS = CH.slice(0, -1).map(function (c) { return (c.start + c.count) / N; });
   function bonusTag(q) { return q.points > 1 ? h('div', { class: 'bonus a-zoom', text: '★ QUESTION BONUS — ' + q.points + ' POINTS' }) : null; }
-  function kicker(q) { return q.expression ? h('div', { class: 'kicker', text: q.expression }) : null; }
+  function kicker(q) { var k = q.kicker || q.expression; return k ? h('div', { class: 'kicker', text: k }) : null; }
   // image d'écran facultative (accueil, participants, classement) : vide = décor de secours, sans requête
   function cfgImage(k) { return CFG[k] ? window.ExpressionsModel.enc(CFG.imagesDir + CFG[k]) : ''; }
   function indivMode() { return state.mode === 'individual' && state.players.length > 0; }
@@ -472,7 +472,7 @@
       subtitle = (CFG.rankingNotes && CFG.rankingNotes[cn]) || ('Après la manche ' + cn);
       btn = h('button', { class: 'btn', onclick: function () { go('intro'); } }, 'Continuer', icon('arrow'));
     } else if (mode === 'finale') {
-      subtitle = 'Classement complet';
+      subtitle = 'Classement complet — score final sur ' + MAX + ' points';
       btn = h('button', { class: 'btn orange a-up', style: 'animation-delay:' + ((n * step) + 0.8) + 's', onclick: startPodium }, 'Voir le podium', icon('arrow'));
     } else {
       btn = h('button', { class: 'btn', onclick: function () { go(prevScreen === 'ranking' ? 'question' : prevScreen); } }, 'Retour au quiz', icon('arrow'));
@@ -508,7 +508,7 @@
       h('div', { class: 'bg', style: 'background: linear-gradient(160deg, #DCEFE8, #F5F1E9 55%, #F6DEC4)' }),
       h('div', { class: 'head' }, logo()),
       h('h1', { class: 'title-serif a-up' + (group ? ' fintitle' : ''), text: group ? CFG.finaleTitle : 'BRAVO À TOUS !' }),
-      h('div', { class: 'subt a-up d1', text: CFG.title + ' — ' + CFG.subtitle }));
+      h('div', { class: 'subt a-up d1' + (group ? '' : ' score'), text: group ? CFG.title + ' — ' + CFG.subtitle : 'SCORE FINAL — SUR ' + MAX + ' POINTS' }));
     if (!group) {
       var pod = h('div', { class: 'podium' + (total === 1 ? ' solo' : '') });
       var colors = { 1: '#DA8548', 2: '#9A9FA2', 3: '#C58A5A' };
@@ -517,7 +517,8 @@
         var fresh = state.justRevealed === i;
         pod.appendChild(h('div', { class: 'pod p' + (i + 1) + (shown ? '' : ' hide') + (shown && !fresh ? ' noanim' : '') },
           h('span', { html: ICON.trophy(colors[i + 1]), style: 'display:flex', 'aria-hidden': 'true' }),
-          h('div', { class: 'nm', text: r.player.name + ' — ' + pts(r.player.score) }),
+          h('div', { class: 'nm', text: ['🥇', '🥈', '🥉'][Math.min(r.rank, 3) - 1] + ' ' + r.player.name }),
+          h('div', { class: 'sc', text: pts(r.player.score) + ' points' }),
           h('div', { class: 'blk', text: shown ? L.rankLabel(r.rank) : String(i + 1) })));
       });
       s.appendChild(pod);
@@ -530,7 +531,7 @@
         rows.forEach(function (r) {
           lst.appendChild(h('div', { class: 'r' }, h('span', { class: 'rk r' + r.rank, text: L.rankLabel(r.rank) }), h('span', { class: 'nm', text: r.player.name + ' — ' + pts(r.player.score) })));
         });
-        s.appendChild(h('div', { class: 'fullrank a-up d3' }, h('h2', { text: 'Classement complet' }), lst));
+        s.appendChild(h('div', { class: 'fullrank a-up d3' }, h('h2', { text: 'Classement complet — sur ' + MAX + ' points' }), lst));
       }
     }
     if (done) {
