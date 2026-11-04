@@ -4,7 +4,7 @@
    Blocs après validation : short = ✅ Réponse · sens = 💬 Ce que ça veut dire (sensLabel : intitulé facultatif)
    origine = 🕰️ D’où ça vient · savez = ✨ Le saviez-vous ? · etvous = 🗣️ Et vous ? (facultatif)
    image : nom d’un fichier de expressions/assets/images/ (vide = décor OBEO de secours, aucune requête)
-   imageAfterValidation : true si l’image dévoile la réponse (décor avant validation, image dans ✅ Réponse après)
+   revealImage : image dédiée affichée en vignette dans « ✅ Réponse » après validation (facultatif)
    ==================================================================================== */
 (function (root) {
   var CONFIG = {
@@ -44,7 +44,7 @@
       savez: "Le verbe « bayer » ne survit pratiquement plus aujourd’hui que dans cette expression.",
       etvous: "Est-ce que vous entendiez cette expression quand vous étiez enfants ?",
       points: 1,
-      image: '' },
+      image: "manche1.jpg" },
     // Q2 — Croquer le marmot
     { id: 'm1q2',
       chapter: 1,
@@ -59,8 +59,8 @@
       savez: "L’expression est très ancienne et apparaît déjà dans les anciens dictionnaires avec le sens d’attendre longtemps.",
       etvous: "",
       points: 1,
-      imageAfterValidation: true,  /* l’image montre la réponse : affichée seulement après validation */
-      image: "q02-marmot.jpg" },
+      revealImage: "q02-marmot.jpg",
+      image: "hero-expressions.jpg" },
     // Q3 — Faire des gorges chaudes
     { id: 'm1q3',
       chapter: 1,
@@ -75,6 +75,7 @@
       savez: "La fauconnerie a laissé dans la langue française plusieurs mots et expressions que nous utilisons encore sans toujours connaître leur origine.",
       etvous: "",
       points: 1,
+      revealImage: "q03-fauconnerie.jpg",
       image: "q03-fauconnerie.jpg" },
     // Q4 — Se mettre martel en tête
     { id: 'm1q4',
@@ -90,7 +91,7 @@
       savez: "Les anciennes éditions des dictionnaires associaient aussi cette expression aux soupçons et à la jalousie.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche1.jpg" },
     // Q5 — Prendre la poudre d’escampette
     { id: 'm1q5',
       chapter: 1,
@@ -105,7 +106,7 @@
       savez: "L’image humoristique d’une mystérieuse poudre qui permettrait de disparaître a contribué au succès de l’expression.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche1.jpg" },
     // Q6 — Mettre la puce à l’oreille
     { id: 'm1q6',
       chapter: 1,
@@ -120,7 +121,7 @@
       savez: "Plusieurs explications circulent sur son origine, mais aucune n’est établie avec certitude : son origine précise reste incertaine.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche1.jpg" },
     // Q7 — Avoir maille à partir
     { id: 'm2q7',
       chapter: 2,
@@ -135,8 +136,8 @@
       savez: "Une maille était une somme si faible qu’un partage devenait source de dispute.",
       etvous: "",
       points: 1,
-      imageAfterValidation: true,  /* l’image montre la réponse : affichée seulement après validation */
-      image: "q07-maille.jpg" },
+      revealImage: "q07-maille.jpg",
+      image: "manche2.jpg" },
     // Q8 — Payer en monnaie de singe
     { id: 'm2q8',
       chapter: 2,
@@ -151,7 +152,7 @@
       savez: "Le Dictionnaire de l’Académie française a longtemps défini « payer en monnaie de singe » comme le fait de se moquer de celui à qui l’on doit quelque chose au lieu de le payer réellement.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche2.jpg" },
     // Q9 — Avoir voix au chapitre
     { id: 'm2q9',
       chapter: 2,
@@ -166,7 +167,7 @@
       savez: "Ici, « chapitre » n’a donc à l’origine rien à voir avec un chapitre de roman.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche2.jpg" },
     // Q10 — À tire-larigot
     { id: 'm2q10',
       chapter: 2,
@@ -181,7 +182,7 @@
       savez: "Même d’anciens dictionnaires présentent certaines de ces explications avec prudence.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche2.jpg" },
     // Q11 — Être dans le pétrin
     { id: 'm2q11',
       chapter: 2,
@@ -196,7 +197,7 @@
       savez: "Le sens figuré existe depuis longtemps.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche2.jpg" },
     // Q12 — Faire la fine bouche
     { id: 'm2q12',
       chapter: 2,
@@ -211,7 +212,7 @@
       savez: "L’expression a quitté le seul domaine de la nourriture et peut concerner une offre, un emploi ou une occasion.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche2.jpg" },
     // Q13 — Faire long feu
     { id: 'm3q13',
       chapter: 3,
@@ -226,7 +227,7 @@
       savez: "Notre intuition moderne pousse facilement à comprendre l’expression à l’envers.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q14 — Tirer les marrons du feu
     { id: 'm3q14',
       chapter: 3,
@@ -241,7 +242,7 @@
       savez: "À l’origine, celui qui tire les marrons du feu est plutôt la dupe.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q15 — Être au bout du rouleau
     { id: 'm3q15',
       chapter: 3,
@@ -256,7 +257,7 @@
       savez: "L’image générale est celle de quelque chose dont on atteint réellement la fin.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q16 — Tenir le haut du pavé
     { id: 'm3q16',
       chapter: 3,
@@ -272,7 +273,7 @@
       savez: "",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q17 — Tenir la corde
     { id: 'm3q17',
       chapter: 3,
@@ -288,7 +289,7 @@
       savez: "",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q18 — Frappé au coin du bon sens
     { id: 'm3q18',
       chapter: 3,
@@ -303,7 +304,7 @@
       savez: "",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche3.jpg" },
     // Q19 — Tomber dans les pommes
     { id: 'm4q19',
       chapter: 4,
@@ -319,7 +320,7 @@
       savez: "Plusieurs histoires circulent sur cette expression, mais aucune ne peut être présentée comme certaine : son origine reste incertaine.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q20 — Poser un lapin
     { id: 'm4q20',
       chapter: 4,
@@ -334,7 +335,7 @@
       savez: "Le sens moderne est parfaitement clair même si l’origine précise est moins certaine.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q21 — Faire chou blanc
     { id: 'm4q21',
       chapter: 4,
@@ -350,7 +351,7 @@
       savez: "",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q22 — À la queue leu leu
     { id: 'm4q22',
       chapter: 4,
@@ -365,7 +366,7 @@
       savez: "L’image est celle d’animaux avançant les uns derrière les autres.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q23 — Passer l’arme à gauche
     { id: 'm4q23',
       chapter: 4,
@@ -380,7 +381,7 @@
       savez: "Le sens est clair, mais l’origine précise reste moins certaine qu’on ne le croit souvent.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q24 — Couper l’herbe sous le pied
     { id: 'm4q24',
       chapter: 4,
@@ -395,7 +396,7 @@
       savez: "L’expression est ancienne et apparaît déjà dans de vieux dictionnaires français.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche4.jpg" },
     // Q25 — Faire des salamalecs
     { id: 'm5q25',
       chapter: 5,
@@ -410,7 +411,7 @@
       savez: "En français, le mot a fini par évoquer des salutations très cérémonieuses ou excessives.",
       etvous: "Entendiez-vous dire : « Arrête tes salamalecs » ?",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q26 — Fier comme Artaban
     { id: 'm5q26',
       chapter: 5,
@@ -426,7 +427,7 @@
       savez: "L’expression a largement survécu au roman qui l’a inspirée.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q27 — Ne pas être sorti de l’auberge
     { id: 'm5q27',
       chapter: 5,
@@ -442,7 +443,7 @@
       savez: "",
       etvous: "Utilisez-vous encore cette expression ?",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q28 — Faire bombance
     { id: 'm5q28',
       chapter: 5,
@@ -458,7 +459,7 @@
       savez: "",
       etvous: "Disait-on plutôt « faire bombance », « faire ripaille » ou « faire la fête » ?",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q29 — Courir sur le haricot
     { id: 'm5q29',
       chapter: 5,
@@ -474,7 +475,7 @@
       savez: "Aucune de ces hypothèses n’est établie avec certitude : l’origine reste incertaine.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q30 — Être sur la sellette
     { id: 'm5q30',
       chapter: 5,
@@ -490,7 +491,7 @@
       savez: "",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "manche5.jpg" },
     // Q31 — À brûle-pourpoint
     { id: 'm6q31',
       chapter: 6,
@@ -506,7 +507,7 @@
       savez: "",
       etvous: "",
       points: 2,
-      image: '' },
+      image: "manche6.jpg" },
     // Q32 — Brûler à petit feu
     { id: 'm6q32',
       chapter: 6,
@@ -522,7 +523,7 @@
       savez: "",
       etvous: "",
       points: 2,
-      image: '' },
+      image: "manche6.jpg" },
     // Q33 — Tomber de Charybde en Scylla
     { id: 'm6q33',
       chapter: 6,
@@ -537,7 +538,7 @@
       savez: "",
       etvous: "",
       points: 2,
-      image: '' },
+      image: "manche6.jpg" },
     // Q34 — De haut vol
     { id: 'm6q34',
       chapter: 6,
@@ -553,7 +554,7 @@
       savez: "",
       etvous: "",
       points: 2,
-      image: '' },
+      image: "manche3.jpg" },
     // Q35 — Coupe sombre ou coupe claire ?
     { id: 'm6q35',
       chapter: 6,
@@ -568,7 +569,7 @@
       savez: "L’usage figuré moderne de « coupes sombres » peut nous faire croire exactement l’inverse.",
       etvous: "",
       points: 2,
-      image: '' },
+      image: "manche6.jpg" },
     // Q36 — Battre en brèche
     { id: 'm6q36',
       chapter: 6,
@@ -584,7 +585,7 @@
       savez: "",
       etvous: "",
       points: 2,
-      image: '' }
+      image: "manche4.jpg" }
   ];
 
   var api = { CONFIG: CONFIG, CHAPTERS: CHAPTERS, QUESTIONS: QUESTIONS };

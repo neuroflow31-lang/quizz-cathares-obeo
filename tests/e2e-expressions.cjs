@@ -183,10 +183,10 @@ async function playAll(pg, group) {
     const ld = sel => pg.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 1000; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
     for (const q of Q) {
       await pg.evaluate(i => window.__quiz.jump(i), q.n);
-      if (q.image && !q.imageAfter) assert.ok(await ld('.qside .photo img'), 'image ' + q.id);
-      else assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'décor avant validation ' + q.id);
-      if (q.imageAfter) {
-        assert.equal(await pg.locator('img[src*="' + q.image + '"]').count(), 0, 'image-réponse cachée avant validation ' + q.id);
+      assert.ok(await ld('.qside .photo img'), 'image ' + q.id);
+      assert.equal(await pg.locator('.photo.fallback').count(), 0, 'aucun décor de secours ' + q.id);
+      if (q.revealImage) {
+        if (q.revealImage !== q.image) assert.equal(await pg.locator('img[src*="' + q.revealImage.split('/').pop() + '"]').count(), 0, 'vignette cachée avant validation ' + q.id);
         await pg.click('.answer >> nth=0'); await pg.click('text=Valider');
         assert.ok(await ld('.zrep .thumb'), 'image affichée après validation ' + q.id);
       }
@@ -197,7 +197,7 @@ async function playAll(pg, group) {
     const jpg = fs.readdirSync(path.join(DIR, '..', 'animaux', 'assets', 'images')).find(f => f.endsWith('.jpg'));
     fs.copyFileSync(path.join(DIR, '..', 'animaux', 'assets', 'images', jpg), path.join(tmp, 'assets', 'images', 'essai q1.jpg'));
     const dataF = path.join(tmp, 'js', 'quiz-data.js');
-    fs.writeFileSync(dataF, fs.readFileSync(dataF, 'utf8').replace("points: 1,\n      image: '' }", "points: 1,\n      image: 'essai q1.jpg' }").replace(/(\/\/ Q4 —[\s\S]*?image: )''/, "$1'absente.jpg'"));
+    fs.writeFileSync(dataF, fs.readFileSync(dataF, 'utf8').replace("points: 1,\n      image: \"manche1.jpg\" }", "points: 1,\n      image: 'essai q1.jpg' }").replace(/(\/\/ Q4 —[\s\S]*?image: )"manche1.jpg"/, "$1'absente.jpg'"));
     pg = await newPage(browser, null, 'file://' + path.join(tmp, 'index.html'));
     pg.errs.length = 0;
     await addPlayers(pg, NAMES); await pg.click('text=C’est parti'); await pg.click('.intro .btn');

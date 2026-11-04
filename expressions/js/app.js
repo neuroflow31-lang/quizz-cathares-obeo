@@ -335,8 +335,7 @@
 
     if (!revealed) {
       if (!two) {
-        // image qui dévoilerait la réponse : décor avant validation, image dans « ✅ Réponse » ensuite
-        var side = h('div', { class: 'qside' }, imageBox(q.imageAfter ? '' : q.image, imgOpts));
+        var side = h('div', { class: 'qside' }, imageBox(q.image, imgOpts));
         if (q.type === 'qcm' && indiv) side.appendChild(miniRanking());
         s.appendChild(side);
       }
@@ -354,7 +353,7 @@
       var right = h('div', { class: 'right' });
       // Zones après validation : ✅ Réponse · 💬 Ce que ça veut dire · 🕰️ D’où ça vient · ✨ Le saviez-vous ? · 🗣️ Et vous ?
       var goodTxt = two ? q.answers[q.correct] : LETTERS[q.correct] + ' — ' + q.answers[q.correct];
-      var thumb = (q.type === 'visual' || q.explicitImage) ? h('img', { class: 'thumb', src: q.image, alt: '', onerror: function () { this.remove(); } }) : null;
+      var thumb = q.revealImage ? h('img', { class: 'thumb', src: q.revealImage, alt: '', onerror: function () { this.remove(); } }) : null;
       right.appendChild(h('div', { class: 'zone zrep' + ((q.short || goodTxt).length > 70 ? ' long' : '') }, thumb, h('div', null, h('h2', { text: '✅ Réponse' }), h('p', { text: q.short || goodTxt }))));
       var dense = q.blocks.reduce(function (a, b) { return a + b.text.length; }, 0) > 330 || q.blocks.length >= 4;
       if (dense) right.classList.add('dense');
@@ -373,7 +372,7 @@
     show(s); addTestTag(s, q);
   }
   function addTestTag(s, q) {
-    if (state.test) s.appendChild(h('div', { class: 'testtag', text: 'TEST · ' + q.id + ' · ' + q.type + ' · ' + q.points + ' pt' + (q.source ? ' · ' + q.source : '') + (q.placeholder ? ' · [à remplacer]' : '') + (!q.image ? ' · IMAGE À FOURNIR' : q.imageAfter ? ' · IMAGE À REMPLACER (trop révélatrice)' : '') }));
+    if (state.test) s.appendChild(h('div', { class: 'testtag', text: 'TEST · ' + q.id + ' · ' + q.type + ' · ' + q.points + ' pt' + (q.source ? ' · ' + q.source : '') + (q.placeholder ? ' · [à remplacer]' : '') + (!q.image ? ' · IMAGE À FOURNIR' : '') }));
   }
 
   function miniRanking() {

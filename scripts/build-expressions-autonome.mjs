@@ -11,7 +11,7 @@ const uri = (f) => 'data:' + (f.endsWith('.png') ? 'image/png' : 'image/jpeg') +
 // images réellement utilisées par le quiz (même résolution de chemins que le moteur)
 const m = require(path.join(root, 'js/model.js')).build(require(path.join(root, 'js/quiz-data.js')));
 const used = new Set();
-m.questions.forEach((q) => q.image && used.add(q.image));
+m.questions.forEach((q) => { if (q.image) used.add(q.image); if (q.revealImage) used.add(q.revealImage); });
 m.chapters.forEach((c) => c.image && used.add(c.image));
 const cfg = m.config;
 ['homeImage', 'playersImage', 'rankingImage'].forEach((k) => cfg[k] && used.add(require(path.join(root, 'js/model.js')).enc(cfg.imagesDir + cfg[k])));
@@ -24,7 +24,7 @@ const swap = (a, b) => { if (!app.includes(a)) throw new Error('motif absent : '
 swap("src: 'assets/logo/obeo-logo.png'", "src: window.__OBEO_LOGO");
 swap("src: 'assets/logo/obeo-clover-mark.png'", "src: window.__OBEO_MARK");
 swap('function imageBox(src, opts) {', 'function imageBox(src, opts) {\n    src = window.__img(src);');
-swap("h('img', { class: 'thumb', src: q.image,", "h('img', { class: 'thumb', src: window.__img(q.image),");
+swap("h('img', { class: 'thumb', src: q.revealImage,", "h('img', { class: 'thumb', src: window.__img(q.revealImage),");
 
 const css = read('css/style.css');
 const safe = (js) => js.replace(/<\/script/gi, '<\\/script');

@@ -1,7 +1,7 @@
 // Vérifie expressions/js/quiz-data.js : structure, expressions uniques, images déclarées présentes.   npm run check:expressions
 // Version finale (séance avec les résidents) : npm run check:expressions -- --final
 //   → échoue tant que les 43 visuels (accueil + 6 manches + 36 questions) ne sont pas tous présents,
-//     ou qu'une image est marquée imageAfterValidation (image qui dévoile la réponse : à remplacer par une image neutre).
+//     (une image par question : le décor OBEO de secours ne doit jamais apparaître avec les résidents).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -28,7 +28,7 @@ if (!exists(m.config.homeImage && m.config.imagesDir + m.config.homeImage)) todo
 m.chapters.forEach((c) => { if (!exists(c.image)) todo.push('Manche ' + c.no); });
 m.questions.forEach((q) => {
   if (!exists(q.image)) todo.push(`Q${q.n + 1} (${q.expression})`);
-  else if (q.imageAfter) todo.push(`Q${q.n + 1} (${q.expression}) — image actuelle trop révélatrice, à remplacer par une image neutre`);
+  if (q.revealImage && !exists(q.revealImage)) todo.push(`Q${q.n + 1} (${q.expression}) — vignette de réponse absente`);
 });
 console.log(`  Visuels prêts pour la version finale : ${43 - todo.length} / 43`);
 if (todo.length) console.log('  À fournir :\n    - ' + todo.join('\n    - '));
