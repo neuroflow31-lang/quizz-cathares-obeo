@@ -22,7 +22,7 @@
   var CHAPTERS = [
     { no: 1, title: "Les mots étranges de nos expressions", hook: "Nous utilisons parfois des expressions contenant des mots que presque personne n’emploie plus. Marmot, martel, escampette… Savez-vous encore ce qu’ils racontent ?", count: 6, image: '' },
     { no: 2, title: "Mais qu’est-ce que ça veut dire ?", hook: "Certaines expressions sont encore connues, mais leurs mots ne permettent presque plus d’en deviner le véritable sens.", count: 6, image: '' },
-    { no: 3, title: "Quand l’histoire se cache dans les mots", hook: "", count: 6, image: '' },
+    { no: 3, title: "Quand l’histoire se cache dans les mots", hook: "Certaines expressions sont de véritables petits morceaux d’histoire. Armes anciennes, rues pavées, monnaies, courses ou métiers disparus : derrière des mots que nous utilisons encore se cachent parfois des siècles de vie quotidienne.", count: 6, image: '' },
     { no: 4, title: "Vraie histoire ou belle légende ?", hook: "Internet adore les origines spectaculaires. Mais parfois, la réponse la plus sérieuse est simplement : « Nous ne savons pas exactement. »", count: 6, image: '' },
     { no: 5, title: "Ces expressions que l’on entendait davantage autrefois", hook: "Peut-être que cette manche donnera un avantage aux résidents : certaines expressions étaient beaucoup plus présentes dans la langue quotidienne autrefois.", count: 6, image: '' },
     { no: 6, title: "La grande énigme des expressions", hook: "Six dernières expressions. Elles n’ont jamais été rencontrées dans le quiz. Cette fois, il faudra utiliser votre logique, votre culture et votre intuition.", count: 6, image: '' }
@@ -70,7 +70,7 @@
       short: "S’en moquer abondamment.",
       sens: "Plaisanter ou se moquer aux dépens de quelqu’un ou de quelque chose.",
       origine: "L’expression vient de la fauconnerie. Une « gorge chaude » était une proie encore chaude donnée à un oiseau de chasse.",
-      savez: "L’expression a progressivement quitté le vocabulaire de la chasse pour prendre son sens figuré actuel.",
+      savez: "La fauconnerie a laissé dans la langue française plusieurs mots et expressions que nous utilisons encore sans toujours connaître leur origine.",
       etvous: "",
       points: 1,
       image: '' },
@@ -144,8 +144,8 @@
       answer: 'A',
       short: "Ne pas payer réellement.",
       sens: "S’acquitter d’une dette par des paroles, plaisanteries ou faux paiement.",
-      origine: "L’expression possède une tradition médiévale liée aux bateleurs et aux singes.",
-      savez: "Au XIIIe siècle, le « Livre des métiers » d’Étienne Boileau indique qu’à Paris, au péage du Petit-Pont, le jongleur qui possédait un singe pouvait s’acquitter du droit de passage en faisant jouer l’animal devant le péager.",
+      origine: "Une tradition ancienne relie cette expression aux jongleurs et montreurs de singes. Des textes médiévaux mentionnent leur possibilité de s’acquitter de certains péages en faisant jouer leur animal devant le péager.",
+      savez: "Le Dictionnaire de l’Académie française a longtemps défini « payer en monnaie de singe » comme le fait de se moquer de celui à qui l’on doit quelque chose au lieu de le payer réellement.",
       etvous: "",
       points: 1,
       image: '' },

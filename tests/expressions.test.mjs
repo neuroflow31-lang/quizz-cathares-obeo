@@ -64,3 +64,14 @@ test('Expressions : dossier autonome, autres quiz intacts', () => {
   assert.ok(/obeo-quiz-expressions-v1/.test(app));
   assert.ok(/function pts\(n\) \{ return n \+ ' \/ ' \+ MAX; \}/.test(app));
 });
+test('Expressions : corrections éditoriales (intro manche 3, Q8, Q3 sans spoiler de Q34)', () => {
+  assert.match(m.chapters[2].hook, /^Certaines expressions sont de véritables petits morceaux d’histoire\./);
+  m.chapters.forEach(c => assert.ok(c.hook.length > 60, 'intro manche ' + c.no));
+  const q3 = m.questions[2], q8 = m.questions[7], q34 = m.questions[33];
+  const t3 = norm([q3.q, q3.short].concat(q3.answers, q3.blocks.map(b => b.text)).join(' '));
+  assert.ok(!/haut vol|faucon /.test(t3), 'Q3 ne cite pas « de haut vol »');
+  assert.equal(q3.blocks.find(b => b.key === 'savez').text, 'La fauconnerie a laissé dans la langue française plusieurs mots et expressions que nous utilisons encore sans toujours connaître leur origine.');
+  assert.match(q8.blocks.find(b => b.key === 'origine').text, /^Une tradition ancienne relie cette expression aux jongleurs/);
+  assert.match(q8.blocks.find(b => b.key === 'savez').text, /^Le Dictionnaire de l’Académie française a longtemps défini/);
+  assert.equal(q34.answers[q34.correct], 'La fauconnerie');
+});
