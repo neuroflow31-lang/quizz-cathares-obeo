@@ -52,10 +52,13 @@ test('Expressions : origines incertaines signalées comme telles', () => {
     assert.match(q.blocks.map(b => b.text).join(' '), /incertaine|discutée/, id);
   });
 });
-test('Expressions : images locales facultatives (vide = décor OBEO, sans requête)', () => {
-  m.questions.forEach(q => assert.equal(q.image, '', q.id));
-  m.chapters.forEach(c => assert.equal(c.image, ''));
-  assert.ok(fs.existsSync(path.join(root, 'expressions/assets/images')));
+test('Expressions : 10 images du pack placées (accueil, 6 manches, Q2, Q3, Q7), décor OBEO ailleurs', () => {
+  assert.equal(data.CONFIG.homeImage, 'hero-expressions.jpg');
+  assert.deepEqual(m.chapters.map(c => c.image), [1, 2, 3, 4, 5, 6].map(n => 'assets/images/manche' + n + '.jpg'));
+  const imgs = m.questions.filter(q => q.image).map(q => 'Q' + (q.n + 1) + '=' + decodeURIComponent(q.image).replace('assets/images/', '') + (q.imageAfter ? ' (après validation)' : ''));
+  assert.deepEqual(imgs, ['Q2=q02-marmot.jpg (après validation)', 'Q3=q03-fauconnerie.jpg', 'Q7=q07-maille.jpg (après validation)']);
+  const files = ['hero-expressions.jpg', 'q02-marmot.jpg', 'q03-fauconnerie.jpg', 'q07-maille.jpg'].concat([1, 2, 3, 4, 5, 6].map(n => 'manche' + n + '.jpg'));
+  files.forEach(f => { const b = fs.readFileSync(path.join(root, 'expressions/assets/images', f)); assert.ok(b[0] === 0xff && b[1] === 0xd8, f); });
 });
 test('Expressions : dossier autonome, autres quiz intacts', () => {
   const app = fs.readFileSync(path.join(root, 'expressions/js/app.js'), 'utf8');

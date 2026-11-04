@@ -335,7 +335,8 @@
 
     if (!revealed) {
       if (!two) {
-        var side = h('div', { class: 'qside' }, imageBox(q.image, imgOpts));
+        // image qui dévoilerait la réponse : décor avant validation, image dans « ✅ Réponse » ensuite
+        var side = h('div', { class: 'qside' }, imageBox(q.imageAfter ? '' : q.image, imgOpts));
         if (q.type === 'qcm' && indiv) side.appendChild(miniRanking());
         s.appendChild(side);
       }

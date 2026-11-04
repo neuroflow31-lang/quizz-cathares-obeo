@@ -4,6 +4,7 @@
    Blocs après validation : short = ✅ Réponse · sens = 💬 Ce que ça veut dire (sensLabel : intitulé facultatif)
    origine = 🕰️ D’où ça vient · savez = ✨ Le saviez-vous ? · etvous = 🗣️ Et vous ? (facultatif)
    image : nom d’un fichier de expressions/assets/images/ (vide = décor OBEO de secours, aucune requête)
+   imageAfterValidation : true si l’image dévoile la réponse (décor avant validation, image dans ✅ Réponse après)
    ==================================================================================== */
 (function (root) {
   var CONFIG = {
@@ -16,16 +17,16 @@
     rankingNotes: { 2: 'Après la question 12 — fin de la manche 2', 4: 'Après la question 24 — fin de la manche 4' },
     imagesDir: 'assets/images/',
     /* images d’accueil, des participants et du classement (vide = décor OBEO de secours) */
-    homeImage: '', playersImage: '', rankingImage: ''
+    homeImage: 'hero-expressions.jpg', playersImage: '', rankingImage: ''
   };
 
   var CHAPTERS = [
-    { no: 1, title: "Les mots étranges de nos expressions", hook: "Nous utilisons parfois des expressions contenant des mots que presque personne n’emploie plus. Marmot, martel, escampette… Savez-vous encore ce qu’ils racontent ?", count: 6, image: '' },
-    { no: 2, title: "Mais qu’est-ce que ça veut dire ?", hook: "Certaines expressions sont encore connues, mais leurs mots ne permettent presque plus d’en deviner le véritable sens.", count: 6, image: '' },
-    { no: 3, title: "Quand l’histoire se cache dans les mots", hook: "Certaines expressions sont de véritables petits morceaux d’histoire. Armes anciennes, rues pavées, monnaies, courses ou métiers disparus : derrière des mots que nous utilisons encore se cachent parfois des siècles de vie quotidienne.", count: 6, image: '' },
-    { no: 4, title: "Vraie histoire ou belle légende ?", hook: "Internet adore les origines spectaculaires. Mais parfois, la réponse la plus sérieuse est simplement : « Nous ne savons pas exactement. »", count: 6, image: '' },
-    { no: 5, title: "Ces expressions que l’on entendait davantage autrefois", hook: "Peut-être que cette manche donnera un avantage aux résidents : certaines expressions étaient beaucoup plus présentes dans la langue quotidienne autrefois.", count: 6, image: '' },
-    { no: 6, title: "La grande énigme des expressions", hook: "Six dernières expressions. Elles n’ont jamais été rencontrées dans le quiz. Cette fois, il faudra utiliser votre logique, votre culture et votre intuition.", count: 6, image: '' }
+    { no: 1, title: "Les mots étranges de nos expressions", hook: "Nous utilisons parfois des expressions contenant des mots que presque personne n’emploie plus. Marmot, martel, escampette… Savez-vous encore ce qu’ils racontent ?", count: 6, image: 'manche1.jpg' },
+    { no: 2, title: "Mais qu’est-ce que ça veut dire ?", hook: "Certaines expressions sont encore connues, mais leurs mots ne permettent presque plus d’en deviner le véritable sens.", count: 6, image: 'manche2.jpg' },
+    { no: 3, title: "Quand l’histoire se cache dans les mots", hook: "Certaines expressions sont de véritables petits morceaux d’histoire. Armes anciennes, rues pavées, monnaies, courses ou métiers disparus : derrière des mots que nous utilisons encore se cachent parfois des siècles de vie quotidienne.", count: 6, image: 'manche3.jpg' },
+    { no: 4, title: "Vraie histoire ou belle légende ?", hook: "Internet adore les origines spectaculaires. Mais parfois, la réponse la plus sérieuse est simplement : « Nous ne savons pas exactement. »", count: 6, image: 'manche4.jpg' },
+    { no: 5, title: "Ces expressions que l’on entendait davantage autrefois", hook: "Peut-être que cette manche donnera un avantage aux résidents : certaines expressions étaient beaucoup plus présentes dans la langue quotidienne autrefois.", count: 6, image: 'manche5.jpg' },
+    { no: 6, title: "La grande énigme des expressions", hook: "Six dernières expressions. Elles n’ont jamais été rencontrées dans le quiz. Cette fois, il faudra utiliser votre logique, votre culture et votre intuition.", count: 6, image: 'manche6.jpg' }
   ];
 
   var QUESTIONS = [
@@ -58,7 +59,8 @@
       savez: "L’expression est très ancienne et apparaît déjà dans les anciens dictionnaires avec le sens d’attendre longtemps.",
       etvous: "",
       points: 1,
-      image: '' },
+      imageAfterValidation: true,  /* l’image montre la réponse : affichée seulement après validation */
+      image: "q02-marmot.jpg" },
     // Q3 — Faire des gorges chaudes
     { id: 'm1q3',
       chapter: 1,
@@ -73,7 +75,7 @@
       savez: "La fauconnerie a laissé dans la langue française plusieurs mots et expressions que nous utilisons encore sans toujours connaître leur origine.",
       etvous: "",
       points: 1,
-      image: '' },
+      image: "q03-fauconnerie.jpg" },
     // Q4 — Se mettre martel en tête
     { id: 'm1q4',
       chapter: 1,
@@ -133,7 +135,8 @@
       savez: "Une maille était une somme si faible qu’un partage devenait source de dispute.",
       etvous: "",
       points: 1,
-      image: '' },
+      imageAfterValidation: true,  /* l’image montre la réponse : affichée seulement après validation */
+      image: "q07-maille.jpg" },
     // Q8 — Payer en monnaie de singe
     { id: 'm2q8',
       chapter: 2,

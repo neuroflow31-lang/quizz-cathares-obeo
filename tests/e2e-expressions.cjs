@@ -37,6 +37,7 @@ async function playAll(pg, group) {
     const q = Q[n];
     if (await vis(pg, '.intro')) {
       seen.intros++; assert.match(await pg.locator('.chnum').innerText(), new RegExp('MANCHE ' + q.chapterNo));
+      assert.ok(await pg.waitForFunction(() => { const i = document.querySelector('.intro .photo img'); return i && i.complete && i.naturalWidth > 1000; }, null, { timeout: 5000 }).then(() => true).catch(() => false), 'image manche ' + q.chapterNo);
       if (q.chapterNo === 6 && !group) assert.ok(await pg.locator('text=FINALE — CHAQUE BONNE RÉPONSE VAUT 2 POINTS').count(), 'annonce finale');
       await pg.click('.intro .btn'); await pg.waitForTimeout(100);
     }
@@ -90,7 +91,8 @@ async function playAll(pg, group) {
     let pg = await newPage(browser);
     assert.match(await pg.locator('h1').innerText(), /EXPRESSIONS FRANÇAISES/);
     await pg.waitForTimeout(300);
-    assert.equal(await pg.locator('.photo.fallback').count(), 1, 'accueil : décor OBEO de secours');
+    const loaded = (p, sel) => p.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 1000; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
+    assert.ok(await loaded(pg, '.home .photo img'), 'accueil : hero-expressions.jpg');
     await addPlayers(pg, NAMES);
     await pg.click('text=C’est parti');
     const { seen, expect } = await playAll(pg, false);
@@ -178,20 +180,29 @@ async function playAll(pg, group) {
     /* ---- 5) images : décor de secours partout (aucune image fournie), image locale chargée si fournie ---- */
     pg = await newPage(browser);
     await addPlayers(pg, NAMES); await pg.click('text=C’est parti');
-    assert.equal(await pg.locator('.intro .photo.fallback').count(), 1);
-    for (const q of Q) { await pg.evaluate(i => window.__quiz.jump(i), q.n); assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'décor ' + q.id); }
+    const ld = sel => pg.waitForFunction(s => { const i = document.querySelector(s); return i && i.complete && i.naturalWidth > 1000; }, sel, { timeout: 5000 }).then(() => true).catch(() => false);
+    for (const q of Q) {
+      await pg.evaluate(i => window.__quiz.jump(i), q.n);
+      if (q.image && !q.imageAfter) assert.ok(await ld('.qside .photo img'), 'image ' + q.id);
+      else assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'décor avant validation ' + q.id);
+      if (q.imageAfter) {
+        assert.equal(await pg.locator('img[src*="' + q.image + '"]').count(), 0, 'image-réponse cachée avant validation ' + q.id);
+        await pg.click('.answer >> nth=0'); await pg.click('text=Valider');
+        assert.ok(await ld('.zrep .thumb'), 'image affichée après validation ' + q.id);
+      }
+    }
     assert.deepEqual(pg.errs, []); await pg.close();
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'expr-img-'));
     fs.cpSync(DIR, tmp, { recursive: true });
     const jpg = fs.readdirSync(path.join(DIR, '..', 'animaux', 'assets', 'images')).find(f => f.endsWith('.jpg'));
     fs.copyFileSync(path.join(DIR, '..', 'animaux', 'assets', 'images', jpg), path.join(tmp, 'assets', 'images', 'essai q1.jpg'));
     const dataF = path.join(tmp, 'js', 'quiz-data.js');
-    fs.writeFileSync(dataF, fs.readFileSync(dataF, 'utf8').replace("points: 1,\n      image: '' }", "points: 1,\n      image: 'essai q1.jpg' }").replace(/(\/\/ Q2 —[\s\S]*?image: )''/, "$1'absente.jpg'"));
+    fs.writeFileSync(dataF, fs.readFileSync(dataF, 'utf8').replace("points: 1,\n      image: '' }", "points: 1,\n      image: 'essai q1.jpg' }").replace(/(\/\/ Q4 —[\s\S]*?image: )''/, "$1'absente.jpg'"));
     pg = await newPage(browser, null, 'file://' + path.join(tmp, 'index.html'));
     pg.errs.length = 0;
     await addPlayers(pg, NAMES); await pg.click('text=C’est parti'); await pg.click('.intro .btn');
     assert.ok(await pg.waitForFunction(() => { const i = document.querySelector('.qside .photo img'); return i && i.complete && i.naturalWidth > 0; }, null, { timeout: 5000 }).then(() => true).catch(() => false), 'image locale chargée');
-    await pg.evaluate(() => window.__quiz.jump(1)); await pg.waitForTimeout(300);
+    await pg.evaluate(() => window.__quiz.jump(3)); await pg.waitForTimeout(300);
     assert.equal(await pg.locator('.qside .photo.fallback').count(), 1, 'image absente => décor de secours');
     await pg.close(); fs.rmSync(tmp, { recursive: true, force: true });
 

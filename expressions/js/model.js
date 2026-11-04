@@ -73,7 +73,7 @@
         typeLabel: spec.label, think: r.think != null ? !!r.think : (spec.think || (spec.kind === 'two' && !!r.image)),
         q: String(r.question || ''), clues: (r.clues || []).slice(), answers: answers, correct: correct,
         expression: txt('expression'), blocks: blocks, short: txt('short'), points: r.points || 1,
-        image: r.image ? enc(dir + r.image) : '', explicitImage: !!r.image, fit: r.imageFit === 'contain' ? 'contain' : 'cover',
+        image: r.image ? enc(dir + r.image) : '', explicitImage: !!r.image, imageAfter: !!r.imageAfterValidation, fit: r.imageFit === 'contain' ? 'contain' : 'cover',
         credit: r.credit || '', source: r.source || '', placeholder: ph });
     });
     chapters.forEach(function (c, i) {
