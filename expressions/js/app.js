@@ -14,7 +14,7 @@
   var state = fresh();
   function fresh() {
     return { screen: 'home', mode: 'individual', players: [], nextId: 1, idx: 0, phase: 'choose', selected: null, awarded: {},
-      rankMode: 'peek', podiumStep: 0, justRevealed: -1, test: false };
+      rankMode: 'peek', podiumStep: 0, justRevealed: -1, test: false, groupPts: {} };
   }
   // pas de sauvegarde en mode test : un rechargement ramène à la partie réelle précédente
   function save() { if (state.test) return; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -136,6 +136,9 @@
   // Score toujours affiché sur le maximum possible (somme des points des 36 questions = 42)
   var MAX = Q.reduce(function (a, q) { return a + q.points; }, 0);
   function pts(n) { return n + ' / ' + MAX; }
+  // Mode « Jouer tous ensemble » : score du groupe calculé automatiquement (réponse validée = réponse du groupe)
+  function groupScore() { var g = state.groupPts || {}; return Object.keys(g).reduce(function (a, k) { return a + g[k]; }, 0); }
+  function groupMode() { return state.mode === 'group'; }
 
   /* ---------- accueil ---------- */
   function home() {
@@ -206,6 +209,7 @@
   }
 
   function beginGame(mode) {
+    state.groupPts = {};
     state.mode = mode; state.idx = 0; state.selected = null; state.awarded = {}; state.rankMode = 'peek'; state.podiumStep = 0; state.justRevealed = -1;
     state.phase = firstPhase(Q[0]);
     state.players = L.resetScores(state.players);
@@ -250,7 +254,8 @@
     right.push(h('button', { class: 'icon-btn', onclick: askQuit, 'aria-label': 'Quitter la partie' }, icon('x'), 'Quitter'));
     return h('div', { class: 'head' }, logo(),
       h('div', { class: 'progwrap' }, h('div', { class: 'ptext', text: 'Question ' + (state.idx + 1) + ' sur ' + N + '  ·  ' + p.ch.title }), bar),
-      h('div', { class: 'pill', text: 'Manche ' + p.ch.no + ' · ' + (p.n + 1) + ' / ' + p.ch.count }), right);
+      h('div', { class: 'pill', text: 'Manche ' + p.ch.no + ' · ' + (p.n + 1) + ' / ' + p.ch.count }),
+      groupMode() ? h('div', { class: 'pill gscore', text: 'Score du groupe : ' + pts(groupScore()) }) : null, right);
   }
   function askQuit() {
     var box = h('div', { class: 'confirm' }, h('div', { class: 'box' },
@@ -367,7 +372,11 @@
       if (indiv && phase === 'revealed') {
         s.appendChild(h('div', { class: 'nextbar' }, h('button', { class: 'btn orange', onclick: function () { state.phase = 'award'; save(); question(); } }, 'Attribuer les points', icon('arrow'))));
       } else if (indiv) s.appendChild(awardPanel(nextBtn, q));
-      else s.appendChild(h('div', { class: 'nextbar' }, nextBtn));
+      else {
+        var won = (state.groupPts || {})[state.idx];
+        s.appendChild(h('div', { class: 'nextbar' },
+          groupMode() ? h('div', { class: 'gwin' + (won ? ' ok' : ''), text: won ? '✓ +' + won + ' point' + (won > 1 ? 's' : '') + ' pour le groupe !' : 'Pas de point pour le groupe cette fois' }) : null, nextBtn));
+      }
     }
     show(s); addTestTag(s, q);
   }
@@ -390,7 +399,10 @@
     return card;
   }
 
-  function reveal() { state.phase = 'revealed'; state.awarded = {}; save(); question(); }
+  function reveal() {
+    if (groupMode() && !state.test) { var q = Q[state.idx]; state.groupPts = state.groupPts || {}; state.groupPts[state.idx] = state.selected === q.correct ? q.points : 0; }
+    state.phase = 'revealed'; state.awarded = {}; save(); question();
+  }
 
   function awardPanel(nextBtn, q) {
     var step = q.points, n = state.players.length;
@@ -508,7 +520,8 @@
       h('div', { class: 'bg', style: 'background: linear-gradient(160deg, #DCEFE8, #F5F1E9 55%, #F6DEC4)' }),
       h('div', { class: 'head' }, logo()),
       h('h1', { class: 'title-serif a-up' + (group ? ' fintitle' : ''), text: group ? CFG.finaleTitle : 'BRAVO À TOUS !' }),
-      h('div', { class: 'subt a-up d1' + (group ? '' : ' score'), text: group ? CFG.title + ' — ' + CFG.subtitle : 'SCORE FINAL — SUR ' + MAX + ' POINTS' }));
+      h('div', { class: 'subt a-up d1 score', text: 'SCORE FINAL — SUR ' + MAX + ' POINTS' }));
+    if (group) s.appendChild(h('div', { class: 'groupscore a-zoom d2' }, h('span', { text: 'Score du groupe' }), h('b', { text: pts(groupScore()) })));
     if (!group) {
       var pod = h('div', { class: 'podium' + (total === 1 ? ' solo' : '') });
       var colors = { 1: '#DA8548', 2: '#9A9FA2', 3: '#C58A5A' };
@@ -550,7 +563,7 @@
     finalScreen();
   }
   function replay() {
-    state.players = L.resetScores(state.players);
+    state.players = L.resetScores(state.players); state.groupPts = {};
     state.idx = 0; state.phase = firstPhase(Q[0]); state.selected = null; state.awarded = {}; state.rankMode = 'peek'; state.podiumStep = 0; state.justRevealed = -1;
     lastProgress = 0;
     if (state.test) { go('testmenu'); return; }

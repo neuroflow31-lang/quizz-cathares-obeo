@@ -70,7 +70,12 @@ async function playAll(pg, group) {
       if (n % 2 === 0) { await plus.nth(1).click(); expect[1] += q.points; }
       if (n % 5 === 0) { await plus.nth(2).click(); expect[2] += q.points; }
       await pg.click('.award .btn >> text=/suivant|classement|Manche/i');
-    } else await pg.click('.nextbar .btn');
+    } else {
+      const gs = Q.slice(0, n + 1).reduce((a, x) => a + (x.correct === 1 ? x.points : 0), 0); // le groupe a choisi B à chaque question
+      assert.equal(await pg.locator('.pill.gscore').innerText(), 'Score du groupe : ' + gs + ' / 42', 'score du groupe Q' + (n + 1));
+      assert.match(await pg.locator('.nextbar .gwin').innerText(), q.correct === 1 ? /\+\d point/ : /Pas de point/);
+      await pg.click('.nextbar .btn');
+    }
     await pg.waitForTimeout(100);
     if (!group && n < Q.length - 1 && M.config.rankingAfterChapters.some(c => ends[c - 1] === n)) {
       seen.between++;
@@ -133,6 +138,11 @@ async function playAll(pg, group) {
     assert.equal(g.seen.between, 0);
     assert.ok(await pg.locator('text=VOYAGE TERMINÉ AU CŒUR DES EXPRESSIONS FRANÇAISES !').count());
     assert.equal(await pg.locator('.pod').count(), 0);
+    const gTotal = Q.reduce((a, x) => a + (x.correct === 1 ? x.points : 0), 0);
+    assert.equal(await pg.locator('.groupscore b').innerText(), gTotal + ' / 42', 'score final du groupe');
+    assert.equal(await pg.locator('.final .subt').innerText(), 'SCORE FINAL — SUR 42 POINTS');
+    await pg.reload(); await pg.waitForTimeout(300);
+    assert.equal(await pg.locator('.groupscore b').innerText(), gTotal + ' / 42', 'score du groupe conservé après rechargement');
     assert.deepEqual(pg.errs, []); await pg.close();
 
     /* ---- 3) 20 participants : attribution sans chevauchement ---- */

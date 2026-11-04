@@ -475,3 +475,14 @@ button, input { font-family: inherit; }
 .pod .sc { font-size: 34px; font-weight: 800; color: var(--green-dark); margin-bottom: 12px; }
 .zvoyage { border-left-color: var(--green); background: #EEF6F4; }
 .zvoyage h2 { color: var(--green-dark); }
+/* mode « Jouer tous ensemble » : score du groupe */
+.pill.gscore { background: var(--green-dark); }
+.nextbar .gwin { font-size: 34px; font-weight: 700; color: var(--muted); }
+.nextbar .gwin.ok { color: var(--green-dark); }
+.final.group .groupscore { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.final.group .groupscore span { font-size: 40px; font-weight: 700; color: var(--text); }
+.final.group .groupscore b { font-size: 120px; line-height: 1; font-weight: 800; color: var(--orange-dark); }
+.final.group .thanks { top: 560px; }
+.final h1.fintitle { top: 110px; padding: 0 60px; }
+.final.group .subt { top: 275px; }
+.final.group .groupscore { top: 345px; }
