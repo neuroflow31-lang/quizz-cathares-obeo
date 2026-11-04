@@ -1,4 +1,7 @@
 // Vérifie expressions/js/quiz-data.js : structure, expressions uniques, images déclarées présentes.   npm run check:expressions
+// Version finale (séance avec les résidents) : npm run check:expressions -- --final
+//   → échoue tant que les 43 visuels (accueil + 6 manches + 36 questions) ne sont pas tous présents,
+//     ou qu'une image est marquée imageAfterValidation (image qui dévoile la réponse : à remplacer par une image neutre).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -19,4 +22,16 @@ console.log(`  Total de points possibles par participant : ${m.questions.reduce(
 if (m.placeholders) console.log(`\n⚠  ${m.placeholders} question(s) contiennent encore du texte provisoire.`);
 m.warnings.forEach((w) => console.log('⚠  ' + w));
 if (m.errors.length) { m.errors.forEach((e) => console.error('✗ ' + e)); process.exit(1); }
+// visuels attendus pour la version finale : 1 accueil + 6 manches + 36 questions = 43
+const todo = [];
+if (!exists(m.config.homeImage && m.config.imagesDir + m.config.homeImage)) todo.push('Accueil');
+m.chapters.forEach((c) => { if (!exists(c.image)) todo.push('Manche ' + c.no); });
+m.questions.forEach((q) => {
+  if (!exists(q.image)) todo.push(`Q${q.n + 1} (${q.expression})`);
+  else if (q.imageAfter) todo.push(`Q${q.n + 1} (${q.expression}) — image actuelle trop révélatrice, à remplacer par une image neutre`);
+});
+console.log(`  Visuels prêts pour la version finale : ${43 - todo.length} / 43`);
+if (todo.length) console.log('  À fournir :\n    - ' + todo.join('\n    - '));
 console.log(`\n✓ Structure et contenu valides${missing ? ' (' + missing + ' image(s) manquante(s))' : ''}.`);
+if (process.argv.includes('--final') && todo.length) { console.error(`✗ VERSION FINALE NON PRÊTE : ${todo.length} visuel(s) manquant(s) — le décor OBEO de secours ne doit pas être utilisé avec les résidents.`); process.exit(1); }
+if (process.argv.includes('--final')) console.log('✓ VERSION FINALE PRÊTE : 43 / 43 visuels, aucun décor de secours.');

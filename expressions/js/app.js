@@ -373,7 +373,7 @@
     show(s); addTestTag(s, q);
   }
   function addTestTag(s, q) {
-    if (state.test) s.appendChild(h('div', { class: 'testtag', text: 'TEST · ' + q.id + ' · ' + q.type + ' · ' + q.points + ' pt' + (q.source ? ' · ' + q.source : '') + (q.placeholder ? ' · [à remplacer]' : '') }));
+    if (state.test) s.appendChild(h('div', { class: 'testtag', text: 'TEST · ' + q.id + ' · ' + q.type + ' · ' + q.points + ' pt' + (q.source ? ' · ' + q.source : '') + (q.placeholder ? ' · [à remplacer]' : '') + (!q.image ? ' · IMAGE À FOURNIR' : q.imageAfter ? ' · IMAGE À REMPLACER (trop révélatrice)' : '') }));
   }
 
   function miniRanking() {
