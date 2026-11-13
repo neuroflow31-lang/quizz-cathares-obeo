@@ -236,7 +236,7 @@
     if (m.hints >= 2) hints.appendChild(h('div', { class: 'hint h2' }, h('b', { text: 'Indice 2 :' }), w.hint2));
     if (!m.hints) hints.appendChild(h('div', { class: 'hint empty', text: 'Indice 1 : le mot vaut alors 3 points · Indice 2 : 1 point.' }));
     s.appendChild(h('div', { class: 'right' },
-      h('div', { class: 'cat' }, h('small', { text: 'Catégorie :' }), w.category),
+      h('div', { class: 'ctx' }, h('small', { text: 'Petit indice de contexte' }), h('span', { text: w.context })),
       word, h('div', { class: 'hintrow' }, h1, h2, pot), hints));
     // clavier A–Z (une lettre jouée devient indisponible)
     var kb = h('div', { class: 'keyboard' });

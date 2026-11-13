@@ -23,11 +23,13 @@ const wrong = word => 'ZYXWVKJQFGHDB'.split('').filter(L => E.needed(word).index
 async function noOverflow(pg, label) {
   const bad = await pg.evaluate(() => {
     const st = document.getElementById('stage').getBoundingClientRect(), sc = st.width / 1920, out = [];
-    document.querySelectorAll('#stage .key, #stage .word span, #stage .hint, #stage .result, #stage .potential, #stage .hintbtn, #stage .btn, #stage .head > *, #stage .drawcard, #stage .recap div')
+    document.querySelectorAll('#stage .key, #stage .word span, #stage .hint, #stage .result, #stage .potential, #stage .hintbtn, #stage .ctx, #stage .btn, #stage .head > *, #stage .drawcard, #stage .recap div')
       .forEach(e => { const r = e.getBoundingClientRect(); if (!r.width) return;
         if (r.left < st.left - 1 || r.right > st.right + 1 || r.top < st.top - 1 || r.bottom > st.bottom + 1) out.push(e.className + ' ' + (e.textContent || '').slice(0, 20)); });
     const kb = document.querySelector('.keyboard'), h = document.querySelector('.right');
     if (kb && h && h.getBoundingClientRect().bottom > kb.getBoundingClientRect().top + 1) out.push('chevauchement indices / clavier');
+    const lastHint = [...document.querySelectorAll('.hints .hint')].pop();
+    if (kb && lastHint && lastHint.getBoundingClientRect().bottom > kb.getBoundingClientRect().top - 4) out.push('indice sur le clavier');
     return out;
   });
   assert.deepEqual(bad, [], 'débordement ' + label);
@@ -54,7 +56,10 @@ async function noOverflow(pg, label) {
       }
       const w = W[i].word;
       assert.equal(await txt(pg, '.head .where'), 'MANCHE ' + W[i].manche + ' — MATCH ' + (i + 1));
-      assert.match(await txt(pg, '.cat'), new RegExp(W[i].category.replace(/[’']/g, '.')));
+      assert.equal(await txt(pg, '.ctx small'), 'PETIT INDICE DE CONTEXTE');
+      assert.equal(await txt(pg, '.ctx span'), W[i].context);
+      assert.equal(await pg.locator('.cat').count() + await pg.locator('text=/Catégorie/i').count(), 0, 'plus d’ancienne catégorie');
+      if (await pg.evaluate(() => { const c = document.querySelector('.ctx span'), r = document.querySelector('.right'); return c.scrollWidth > c.clientWidth + 1 || c.getBoundingClientRect().right > r.getBoundingClientRect().right + 1 || c.getBoundingClientRect().height > 100; })) throw new Error('phrase de contexte débordante : match ' + (i + 1));
       assert.equal(await pg.locator('.word span').count(), Array.from(w).length);
       assert.equal(await pg.locator('.word span.hide').count(), Array.from(w).length, 'mot masqué au départ');
       assert.equal(await pg.locator('.key').count(), 26);

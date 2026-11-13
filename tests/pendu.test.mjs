@@ -15,10 +15,14 @@ test('Pendu : 20 matchs, 4 manches de 5, contenu complet, 100 points', () => {
   assert.deepEqual(D.MATCHS.map(m => m.word), ['PARCHEMIN', 'BROCANTE', 'MARABOUT', 'CARTOUCHE', 'CABRIOLET', 'PANACHÉ', 'BELVÉDÈRE', 'ESCARBILLE', 'MÉRIDIENNE', 'MARQUISE',
     'ESCAMPETTE', 'SALAMALECS', 'ARTABAN', 'SELLETTE', 'MARMOT', 'PALIMPSESTE', 'PHYLACTÈRE', 'PÉRIPÉTIE', 'MÉLANCOLIE', 'ÉPHÉMÈRE']);
   D.MATCHS.forEach((m, i) => {
-    assert.ok(m.category && m.hint1 && m.hint2 && m.anecdote, 'match ' + (i + 1));
+    assert.ok(m.context && !m.category && m.hint1 && m.hint2 && m.anecdote, 'match ' + (i + 1));
     [m.hint1, m.hint2].forEach(h => assert.ok(!E.norm(h).includes(E.norm(m.word)), 'indice sans le mot : match ' + (i + 1)));
   });
   assert.equal(D.CONFIG.title, 'LE GRAND PENDU OBEO');
+  assert.equal(D.MATCHS.filter(m => m.context && m.context.length < 80).length, 20, '20 phrases de contexte courtes');
+  assert.equal(D.MATCHS[0].context, 'On le rencontre souvent là où le temps a laissé des traces.');
+  assert.equal(D.MATCHS[19].context, 'Son principal défaut est de ne jamais rester longtemps.');
+  D.MATCHS.forEach(m => assert.ok(!E.norm(m.context).includes(E.norm(m.word)) && m.context !== m.hint1, 'contexte sans le mot : ' + m.word));
 });
 test('Pendu : accents normalisés (É È Ê Ë→E, À Â Ä→A, Î Ï→I, Ô Ö→O, Ù Û Ü→U, Ç→C)', () => {
   assert.equal('ÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ'.split('').map(E.norm).join(''), 'EEEEAAAIIOOUUUC');

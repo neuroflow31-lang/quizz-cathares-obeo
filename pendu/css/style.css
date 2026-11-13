@@ -198,3 +198,10 @@ button, input { font-family: inherit; }
 .tmbtn small { display: block; font-weight: 500; color: var(--muted); font-size: 17px; }
 .tmbtn:hover { border-color: var(--green); }
 .tmrow input { font-size: 26px; width: 140px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--line); }
+/* petit indice de contexte : discret, au-dessus du mot, sans le concurrencer */
+.match .ctx { align-self: stretch; text-align: center; }
+.match .ctx small { display: block; font-size: 22px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--orange-dark); margin-bottom: 4px; }
+.match .ctx span { display: block; font-family: var(--serif); font-style: italic; font-size: 34px; line-height: 1.25; color: var(--green-dark); }
+.match .right { gap: 16px; }
+.hints { gap: 10px; }
+.hint { font-size: 30px; padding: 12px 24px; }
