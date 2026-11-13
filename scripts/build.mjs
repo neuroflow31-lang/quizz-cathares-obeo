@@ -44,4 +44,13 @@ if (ex.questions.reduce((s, q) => s + q.points, 0) !== 42) fail('Expressions : s
 if (errors) process.exit(1);
 fs.cpSync(path.join(root, 'expressions'), path.join(dist, 'expressions'), { recursive: true });
 console.log(`✓ Expressions : ${ex.questions.length} questions, ${ex.chapters.length} manches${ex.placeholders ? ' (' + ex.placeholders + ' à remplacer)' : ''} — copié dans dist/expressions/`);
+// Jeu « Le Grand Pendu OBEO » (dossier autonome)
+const P = require(path.join(root, 'pendu/js/data.js')), PE = require(path.join(root, 'pendu/js/engine.js'));
+if (P.MATCHS.length !== 20) fail('Pendu : 20 matchs attendus');
+if ([1, 2, 3, 4].some((n) => P.MATCHS.filter((m) => m.manche === n).length !== 5)) fail('Pendu : 4 manches de 5 matchs attendues');
+P.MATCHS.forEach((m, i) => { if (!m.word || !m.hint1 || !m.hint2 || !m.anecdote || !m.category) fail('Pendu : match ' + (i + 1) + ' incomplet');
+  if ([m.hint1, m.hint2].some((h) => PE.norm(h).includes(PE.norm(m.word)))) fail('Pendu : un indice du match ' + (i + 1) + ' contient le mot'); });
+if (errors) process.exit(1);
+fs.cpSync(path.join(root, 'pendu'), path.join(dist, 'pendu'), { recursive: true });
+console.log(`✓ Pendu : ${P.MATCHS.length} matchs, 4 manches — copié dans dist/pendu/`);
 console.log(`✓ Données valides (${QUESTIONS.length} épreuves, manches ${per.join('+')}) — application copiée dans dist/`);
