@@ -53,4 +53,12 @@ P.MATCHS.forEach((m, i) => { if (!m.word || !m.hint1 || !m.hint2 || !m.anecdote 
 if (errors) process.exit(1);
 fs.cpSync(path.join(root, 'pendu'), path.join(dist, 'pendu'), { recursive: true });
 console.log(`✓ Pendu : ${P.MATCHS.length} matchs, 4 manches — copié dans dist/pendu/`);
+// Jeu « Le Grand Jeu des Rébus OBEO » (dossier autonome)
+const RB = require(path.join(root, 'rebus/js/data.js'));
+if (RB.REBUS.length !== 20) fail('Rébus : 20 rébus attendus');
+if ([1, 2, 3, 4].some((n) => RB.REBUS.filter((r) => r.manche === n).length !== 5)) fail('Rébus : 4 manches de 5 attendues');
+RB.REBUS.forEach((r, i) => { if (!r.answer || !r.visual || !r.hint1 || !r.hint2 || !r.explain) fail('Rébus ' + (i + 1) + ' incomplet'); });
+if (errors) process.exit(1);
+fs.cpSync(path.join(root, 'rebus'), path.join(dist, 'rebus'), { recursive: true });
+console.log(`✓ Rébus : ${RB.REBUS.length} rébus, 4 manches — copié dans dist/rebus/`);
 console.log(`✓ Données valides (${QUESTIONS.length} épreuves, manches ${per.join('+')}) — application copiée dans dist/`);
