@@ -60,6 +60,10 @@ async function noOverflow(pg, label) {
       const body = await pg.locator('#stage').innerText();
       assert.ok(!body.includes(Q[i].explain) && !/Bonne réponse/.test(body) && await pg.locator('.answer.good, .answer.bad, .zone').count() === 0, 'spoiler défi ' + (i + 1));
       assert.equal(await pg.locator('.validate').getAttribute('aria-disabled'), 'true', 'validation impossible sans choix');
+      // image : affichée avant la question, sauf si elle montrerait la réponse (décor OBEO jusqu'à la validation)
+      const shownImg = () => pg.waitForFunction(() => { const x = document.querySelector('.photo .pic'); return x && x.complete && x.naturalWidth > 0; }, null, { timeout: 4000 }).then(() => true).catch(() => false);
+      if (Q[i].imageAfter) assert.equal(await pg.locator('.photo .pic').count(), 0, 'image-réponse cachée avant validation : défi ' + (i + 1));
+      else assert.ok(await shownImg(), 'image du défi ' + (i + 1));
       if (i < 3 || i === 13 || i === 19) await noOverflow(pg, 'défi ' + (i + 1));
       const good = i % 3 !== 2; // un défi sur trois raté volontairement
       const pick = good ? ok(i) : (ok(i) + 1) % 3;
@@ -72,6 +76,7 @@ async function noOverflow(pg, label) {
       assert.equal(await pg.locator('.answer.good').count(), 1); assert.equal(await txt(pg, '.answer.good .tx'), Q[i].choices[ok(i)]);
       assert.equal(await pg.locator('.answer.bad').count(), good ? 0 : 1);
       assert.equal(await txt(pg, '.zexp p'), Q[i].explain);
+      assert.ok(await shownImg(), 'image affichée à la révélation : défi ' + (i + 1));
       assert.equal(await pg.locator('.zrel').count(), Q[i].relance ? 1 : 0, 'relance défi ' + (i + 1));
       if (Q[i].relance) assert.equal(await txt(pg, '.zrel p'), Q[i].relance);
       assert.equal(await txt(pg, '.nextrow .gnow'), 'Score général : ' + total + ' / ' + (i + 1) * 5);
@@ -136,17 +141,12 @@ async function noOverflow(pg, label) {
       await pg.close();
     }
 
-    /* ---- 5) images : décor provisoire sans image ; une image qNN.jpg déposée s'affiche sans autre modification ---- */
-    pg = await newPage(browser); await pg.click('.testlink'); await pg.click('.tmm >> nth=2'); await pg.waitForTimeout(300);
-    assert.equal(await pg.locator('.photo.fallback').count(), 1, 'décor OBEO provisoire'); await pg.close();
+    /* ---- 5) images : décor OBEO provisoire si une image qNN.jpg manque (filet de sécurité) ---- */
     if (!process.env.ENFANCE_URL) {
       const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enfance-img-'));
-      fs.cpSync(DIR, tmp, { recursive: true });
-      const src = path.join(__dirname, '..', 'animaux', 'assets', 'images'); const jpg = fs.readdirSync(src).find(f => f.endsWith('.jpg'));
-      fs.copyFileSync(path.join(src, jpg), path.join(tmp, 'assets', 'images', 'q03.jpg'));
+      fs.cpSync(DIR, tmp, { recursive: true }); fs.rmSync(path.join(tmp, 'assets', 'images', 'q03.jpg'));
       pg = await newPage(browser, null, 'file://' + path.join(tmp, 'index.html')); await pg.click('.testlink'); await pg.click('.tmm >> nth=2'); await pg.waitForTimeout(500);
-      assert.equal(await pg.locator('.photo.fallback').count(), 0, 'image q03.jpg affichée');
-      assert.ok(await pg.locator('.photo .pic').evaluate(i => i.complete && i.naturalWidth > 0));
+      assert.equal(await pg.locator('.photo.fallback').count(), 1, 'q03.jpg absente → décor OBEO');
       await pg.close(); fs.rmSync(tmp, { recursive: true, force: true });
     }
     console.log('E2E ENFANCE OK');

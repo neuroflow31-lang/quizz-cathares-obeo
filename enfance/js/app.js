@@ -127,11 +127,11 @@
 
   /* ---------- image 16:9 du défi : assets/images/qNN.jpg, décor OBEO provisoire si absente ---------- */
   function imgPath(i) { return CFG.imagesDir + 'q' + (i < 9 ? '0' : '') + (i + 1) + '.jpg'; }
-  function imageBox(i) {
+  function imageBox(i, done) {
     var box = h('div', { class: 'photo fallback' },
       h('img', { class: 'mark', src: 'assets/logo/obeo-clover-mark.png', alt: '' }),
       h('div', { class: 'num', text: String(i + 1), 'aria-hidden': 'true' }));
-    var src = imgPath(i);
+    var src = DEFIS[i].imageAfter && !done ? '' : imgPath(i);   // image qui montrerait la réponse : seulement après validation
     if (src) {
       var img = h('img', { class: 'pic', src: src, alt: 'Illustration du défi ' + (i + 1) });
       img.addEventListener('load', function () { box.classList.remove('fallback'); });
@@ -214,7 +214,7 @@
     var s = h('div', { class: 'screen match qcm' + (done ? ' rev' : '') });
     s.appendChild(header());
     // colonne gauche : image 16:9 puis, après validation, la révélation
-    var left = h('div', { class: 'leftcol' }, imageBox(i));
+    var left = h('div', { class: 'leftcol' }, imageBox(i, done));
     if (!done) left.appendChild(h('p', { class: 'talk', text: 'Prenez le temps d’en discuter ensemble, puis choisissez la réponse du groupe.' }));
     else {
       left.appendChild(h('div', { class: 'verdict pop ' + (m.score ? 'good' : 'bad'), text: m.score ? 'Bonne réponse ! +5 points' : 'Ce n’était pas la bonne réponse · 0 point' }));

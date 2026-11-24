@@ -32,10 +32,12 @@ test('Enfance : appréciations finales', () => {
     'Belle mémoire collective !', 'Vous n’avez pas oublié vos récréations !', 'Vous n’avez pas oublié vos récréations !', 'Experts des jeux d’autrefois !',
     'Experts des jeux d’autrefois !', 'Mémoire exceptionnelle !', 'Mémoire exceptionnelle !']);
 });
-test('Enfance : emplacements d’images q01…q20 et version autonome sans ressource externe', () => {
-  assert.ok(fs.existsSync(path.join(root, 'enfance/assets/images')));
+test('Enfance : 20 images q01…q20 ; celles qui montrent la réponse seulement après validation ; autonome sans ressource externe', () => {
+  for (let n = 1; n <= 20; n++) { const b = fs.readFileSync(path.join(root, 'enfance/assets/images', 'q' + String(n).padStart(2, '0') + '.jpg')); assert.ok(b[0] === 0xff && b[1] === 0xd8, 'JPEG q' + n); }
+  assert.deepEqual(D.DEFIS.map((d, i) => d.imageAfter ? i + 1 : 0).filter(Boolean), [2, 5, 8, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
   const app = fs.readFileSync(path.join(root, 'enfance/js/app.js'), 'utf8');
   assert.ok(/'q' \+ \(i < 9 \? '0' : ''\) \+ \(i \+ 1\) \+ '\.jpg'/.test(app) && /obeo-enfance-v1/.test(app));
   const one = fs.readFileSync(path.join(root, 'enfance/JEUX_ENFANCE_OBEO_AUTONOME.html'), 'utf8');
+  assert.equal((one.match(/"q\d\d":"data:image\/jpeg;base64,/g) || []).length, 20, '20 images intégrées');
   assert.ok(!/src="(js|css|assets)\//.test(one) && !/href="(css|assets)\//.test(one) && !/https?:\/\//.test(one.replace(/http:\/\/www\.w3\.org\/2000\/svg/g, '')));
 });
