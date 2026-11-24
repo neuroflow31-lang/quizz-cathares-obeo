@@ -1,0 +1,11 @@
+Images du jeu « Les jeux de votre enfance »
+
+Déposer ici une image 16:9 par défi, nommée exactement :
+q01.jpg, q02.jpg, … q20.jpg   (défi 1 → q01.jpg, défi 20 → q20.jpg)
+
+Aucune autre modification n'est nécessaire : le jeu les affiche automatiquement.
+Tant qu'une image est absente, un décor OBEO neutre s'affiche à sa place (provisoire).
+Après dépôt des images : relancer « node scripts/build-enfance-autonome.mjs » pour les intégrer
+à la version autonome JEUX_ENFANCE_OBEO_AUTONOME.html.
+
+Règle : l'image ne doit jamais montrer directement la bonne réponse, ni contenir de texte.

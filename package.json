@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs . 5173",
-    "test": "node --test tests/logic.test.mjs tests/france.test.mjs tests/animaux.test.mjs tests/expressions.test.mjs tests/pendu.test.mjs tests/rebus.test.mjs",
+    "test": "node --test tests/logic.test.mjs tests/france.test.mjs tests/animaux.test.mjs tests/expressions.test.mjs tests/pendu.test.mjs tests/rebus.test.mjs tests/enfance.test.mjs",
     "build": "node scripts/build.mjs",
     "check:france": "node scripts/check-france.mjs",
     "check:animaux": "node scripts/check-animaux.mjs",
@@ -15,6 +15,7 @@
     "build:expressions-autonome": "node scripts/build-expressions-autonome.mjs",
     "build:pendu-autonome": "node scripts/build-pendu-autonome.mjs",
     "build:rebus-autonome": "node scripts/build-rebus-autonome.mjs",
+    "build:enfance-autonome": "node scripts/build-enfance-autonome.mjs",
     "preview": "node scripts/serve.mjs dist 4173"
   }
 }

@@ -61,4 +61,12 @@ RB.REBUS.forEach((r, i) => { if (!r.answer || !r.visual || !r.hint1 || !r.hint2 
 if (errors) process.exit(1);
 fs.cpSync(path.join(root, 'rebus'), path.join(dist, 'rebus'), { recursive: true });
 console.log(`✓ Rébus : ${RB.REBUS.length} rébus, 4 manches — copié dans dist/rebus/`);
+// Jeu « Les jeux de votre enfance » (dossier autonome)
+const EN = require(path.join(root, 'enfance/js/data.js'));
+if (EN.DEFIS.length !== 20) fail('Enfance : 20 défis attendus');
+if ([1, 2, 3, 4].some((n) => EN.DEFIS.filter((d) => d.manche === n).length !== 5)) fail('Enfance : 4 manches de 5 attendues');
+EN.DEFIS.forEach((d, i) => { if (d.choices.length !== 3 || !['A', 'B', 'C'].includes(d.answer) || !d.explain) fail('Enfance : défi ' + (i + 1) + ' incomplet'); });
+if (errors) process.exit(1);
+fs.cpSync(path.join(root, 'enfance'), path.join(dist, 'enfance'), { recursive: true });
+console.log(`✓ Enfance : ${EN.DEFIS.length} défis, 4 manches — copié dans dist/enfance/`);
 console.log(`✓ Données valides (${QUESTIONS.length} épreuves, manches ${per.join('+')}) — application copiée dans dist/`);
